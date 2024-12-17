@@ -1,14 +1,7 @@
-//
-//  pluto_swift_sdkTests.swift
-//  pluto-swift-sdkTests
-//
-//  Created by Andrew Jenkins on 12/13/24.
-//
-
 import XCTest
-@testable import pluto_swift_sdk
+@testable import PlutoSwiftSDK
 
-final class pluto_swift_sdkTests: XCTestCase {
+final class PlutoSwiftSDKTests: XCTestCase {
 
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
@@ -16,6 +9,8 @@ final class pluto_swift_sdkTests: XCTestCase {
 
     override func tearDownWithError() throws {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
+        // basic rendering test
+        
     }
 
     func testExample() throws {
