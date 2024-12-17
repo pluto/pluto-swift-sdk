@@ -27,10 +27,16 @@ jobs:
         run: |
           xcodebuild clean build \
             -scheme PlutoSwiftSDK \
-            -destination 'platform=iOS Simulator,name=iPhone 14,OS=17.4'
+            -destination 'platform:iOS Simulator,name:iPhone 15' \
+            -skipPackagePluginValidation
 
       - name: Run Tests
         run: |
           xcodebuild test \
             -scheme PlutoSwiftSDK \
-            -destination 'platform=iOS Simulator,name=iPhone 14,OS=17.4'
+            -destination 'platform:iOS Simulator,name:iPhone 15'
+
+
+
+
+
