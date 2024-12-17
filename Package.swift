@@ -4,7 +4,7 @@ import PackageDescription
 let package = Package(
     name: "PlutoSwiftSDK",
     platforms: [
-        .iOS(.v17_2)  // Minimum iOS version supported
+        .iOS(.v17)  // Minimum iOS version supported
     ],
     products: [
         .library(
