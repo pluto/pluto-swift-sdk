@@ -27,7 +27,6 @@ jobs:
         run: |
           xcodebuild clean build \
             -scheme PlutoSwiftSDK \
-            -testPlan PlutoSwiftSDKTestPlan \
             -destination 'platform=iOS Simulator,name=iPhone 15' \
             -skipPackagePluginValidation
 
