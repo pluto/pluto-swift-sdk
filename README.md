@@ -58,6 +58,7 @@ xcodebuild test -scheme PlutoSwiftSDK -destination 'platform=iOS Simulator,name=
 
 ## Folder Structure
 
+```
 PlutoSwiftSDK/
 ├── Sources/                 # Source code
 │   ├── Enums.swift          # Enums
@@ -69,7 +70,7 @@ PlutoSwiftSDK/
 ├── PlutoSDKTestApp/         # Sample app
 ├── PlutoSwiftSDK.xcodeproj  # Xcode project
 └── README.md                # Project documentation
-
+```
 
 ## Using PlutoSwiftSDK in Your Project
 
@@ -147,4 +148,5 @@ This project is licensed under the MIT License.
 
 ## Contact
 GitHub: [pluto](https://github.com/pluto)
+
 Twitter: [@plutolabs_](https://x.com/plutolabs_)
