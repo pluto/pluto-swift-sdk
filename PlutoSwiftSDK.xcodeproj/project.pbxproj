@@ -7,9 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E04E17972D122AA1006DBB0B /* PlutoSwiftSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E09694222D0CFA9C00A65712 /* PlutoSwiftSDK.framework */; };
+		E04E179D2D122AB0006DBB0B /* PlutoSwiftSDKTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E04E178D2D122A3D006DBB0B /* PlutoSwiftSDKTest.swift */; };
 		E09694272D0CFA9C00A65712 /* PlutoSwiftSDK.docc in Sources */ = {isa = PBXBuildFile; fileRef = E09694262D0CFA9C00A65712 /* PlutoSwiftSDK.docc */; };
-		E096942D2D0CFA9C00A65712 /* PlutoSwiftSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E09694222D0CFA9C00A65712 /* PlutoSwiftSDK.framework */; };
-		E09694322D0CFA9C00A65712 /* PlutoSwiftSDKTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E09694312D0CFA9C00A65712 /* PlutoSwiftSDKTests.swift */; };
 		E09694332D0CFA9C00A65712 /* PlutoSwiftSDK.h in Headers */ = {isa = PBXBuildFile; fileRef = E09694252D0CFA9C00A65712 /* PlutoSwiftSDK.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E0BF04EB2D1217DA00AB3BFB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0BF04EA2D1217DA00AB3BFB /* AppDelegate.swift */; };
 		E0BF04ED2D1217DA00AB3BFB /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0BF04EC2D1217DA00AB3BFB /* SceneDelegate.swift */; };
@@ -22,15 +22,18 @@
 		E0BF05052D121DBA00AB3BFB /* PlutoSwiftSDK.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0BF05032D121DBA00AB3BFB /* PlutoSwiftSDK.swift */; };
 		E0BF05062D121DBA00AB3BFB /* BrowserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0BF05042D121DBA00AB3BFB /* BrowserView.swift */; };
 		E0BF05072D121DBA00AB3BFB /* Prover.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0BF05022D121DBA00AB3BFB /* Prover.swift */; };
+		E0BF050C2D12262700AB3BFB /* Enums.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0BF050B2D12262700AB3BFB /* Enums.swift */; };
+		E0BF050E2D12263500AB3BFB /* ManifestModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0BF050D2D12263500AB3BFB /* ManifestModels.swift */; };
+		E0BF05102D12265400AB3BFB /* ManifestParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0BF050F2D12265400AB3BFB /* ManifestParser.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		E096942E2D0CFA9C00A65712 /* PBXContainerItemProxy */ = {
+		E04E17982D122AA1006DBB0B /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = E09694192D0CFA9C00A65712 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = E09694212D0CFA9C00A65712;
-			remoteInfo = "pluto-swift-sdk";
+			remoteInfo = PlutoSwiftSDK;
 		};
 		E0BF04FF2D121CD500AB3BFB /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -56,11 +59,11 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		E04E178D2D122A3D006DBB0B /* PlutoSwiftSDKTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlutoSwiftSDKTest.swift; sourceTree = "<group>"; };
+		E04E17932D122AA1006DBB0B /* PlutoSwiftSDKTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PlutoSwiftSDKTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E09694222D0CFA9C00A65712 /* PlutoSwiftSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PlutoSwiftSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E09694252D0CFA9C00A65712 /* PlutoSwiftSDK.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PlutoSwiftSDK.h; sourceTree = "<group>"; };
 		E09694262D0CFA9C00A65712 /* PlutoSwiftSDK.docc */ = {isa = PBXFileReference; lastKnownFileType = folder.documentationcatalog; path = PlutoSwiftSDK.docc; sourceTree = "<group>"; };
-		E096942C2D0CFA9C00A65712 /* PlutoSwiftSDKTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PlutoSwiftSDKTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		E09694312D0CFA9C00A65712 /* PlutoSwiftSDKTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlutoSwiftSDKTests.swift; sourceTree = "<group>"; };
 		E0BF04E82D1217DA00AB3BFB /* PlutoSDKTestApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PlutoSDKTestApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E0BF04EA2D1217DA00AB3BFB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E0BF04EC2D1217DA00AB3BFB /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -72,21 +75,24 @@
 		E0BF05022D121DBA00AB3BFB /* Prover.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Prover.swift; sourceTree = "<group>"; };
 		E0BF05032D121DBA00AB3BFB /* PlutoSwiftSDK.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlutoSwiftSDK.swift; sourceTree = "<group>"; };
 		E0BF05042D121DBA00AB3BFB /* BrowserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowserView.swift; sourceTree = "<group>"; };
+		E0BF050B2D12262700AB3BFB /* Enums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Enums.swift; sourceTree = "<group>"; };
+		E0BF050D2D12263500AB3BFB /* ManifestModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManifestModels.swift; sourceTree = "<group>"; };
+		E0BF050F2D12265400AB3BFB /* ManifestParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManifestParser.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		E04E17902D122AA1006DBB0B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E04E17972D122AA1006DBB0B /* PlutoSwiftSDK.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		E096941F2D0CFA9C00A65712 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		E09694292D0CFA9C00A65712 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				E096942D2D0CFA9C00A65712 /* PlutoSwiftSDK.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -101,11 +107,27 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		E04E178B2D1229F1006DBB0B /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				E04E178C2D122A16006DBB0B /* PlutoSwiftSDKTests */,
+			);
+			path = Tests;
+			sourceTree = "<group>";
+		};
+		E04E178C2D122A16006DBB0B /* PlutoSwiftSDKTests */ = {
+			isa = PBXGroup;
+			children = (
+				E04E178D2D122A3D006DBB0B /* PlutoSwiftSDKTest.swift */,
+			);
+			path = PlutoSwiftSDKTests;
+			sourceTree = "<group>";
+		};
 		E09694182D0CFA9C00A65712 = {
 			isa = PBXGroup;
 			children = (
-				E09694242D0CFA9C00A65712 /* PlutoSwiftSDK */,
-				E09694302D0CFA9C00A65712 /* PlutoSwiftSDKTests */,
+				E04E178B2D1229F1006DBB0B /* Tests */,
+				E0BF05092D1225CB00AB3BFB /* Sources */,
 				E0BF04E92D1217DA00AB3BFB /* PlutoSDKTestApp */,
 				E09694232D0CFA9C00A65712 /* Products */,
 				E0BF04FC2D121CD500AB3BFB /* Frameworks */,
@@ -116,8 +138,8 @@
 			isa = PBXGroup;
 			children = (
 				E09694222D0CFA9C00A65712 /* PlutoSwiftSDK.framework */,
-				E096942C2D0CFA9C00A65712 /* PlutoSwiftSDKTests.xctest */,
 				E0BF04E82D1217DA00AB3BFB /* PlutoSDKTestApp.app */,
+				E04E17932D122AA1006DBB0B /* PlutoSwiftSDKTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -126,21 +148,15 @@
 			isa = PBXGroup;
 			children = (
 				E0BF05042D121DBA00AB3BFB /* BrowserView.swift */,
+				E0BF050B2D12262700AB3BFB /* Enums.swift */,
+				E0BF050D2D12263500AB3BFB /* ManifestModels.swift */,
+				E0BF050F2D12265400AB3BFB /* ManifestParser.swift */,
 				E0BF05032D121DBA00AB3BFB /* PlutoSwiftSDK.swift */,
 				E0BF05022D121DBA00AB3BFB /* Prover.swift */,
-				E0BF05082D121DBE00AB3BFB /* Resources */,
 				E09694252D0CFA9C00A65712 /* PlutoSwiftSDK.h */,
 				E09694262D0CFA9C00A65712 /* PlutoSwiftSDK.docc */,
 			);
 			path = PlutoSwiftSDK;
-			sourceTree = "<group>";
-		};
-		E09694302D0CFA9C00A65712 /* PlutoSwiftSDKTests */ = {
-			isa = PBXGroup;
-			children = (
-				E09694312D0CFA9C00A65712 /* PlutoSwiftSDKTests.swift */,
-			);
-			path = PlutoSwiftSDKTests;
 			sourceTree = "<group>";
 		};
 		E0BF04E92D1217DA00AB3BFB /* PlutoSDKTestApp */ = {
@@ -171,6 +187,15 @@
 			path = Resources;
 			sourceTree = "<group>";
 		};
+		E0BF05092D1225CB00AB3BFB /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				E09694242D0CFA9C00A65712 /* PlutoSwiftSDK */,
+				E0BF05082D121DBE00AB3BFB /* Resources */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -185,6 +210,24 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		E04E17922D122AA1006DBB0B /* PlutoSwiftSDKTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E04E179A2D122AA1006DBB0B /* Build configuration list for PBXNativeTarget "PlutoSwiftSDKTests" */;
+			buildPhases = (
+				E04E178F2D122AA1006DBB0B /* Sources */,
+				E04E17902D122AA1006DBB0B /* Frameworks */,
+				E04E17912D122AA1006DBB0B /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				E04E17992D122AA1006DBB0B /* PBXTargetDependency */,
+			);
+			name = PlutoSwiftSDKTests;
+			productName = PlutoSwiftSDKTests;
+			productReference = E04E17932D122AA1006DBB0B /* PlutoSwiftSDKTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		E09694212D0CFA9C00A65712 /* PlutoSwiftSDK */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = E09694362D0CFA9C00A65712 /* Build configuration list for PBXNativeTarget "PlutoSwiftSDK" */;
@@ -202,24 +245,6 @@
 			productName = "pluto-swift-sdk";
 			productReference = E09694222D0CFA9C00A65712 /* PlutoSwiftSDK.framework */;
 			productType = "com.apple.product-type.framework";
-		};
-		E096942B2D0CFA9C00A65712 /* PlutoSwiftSDKTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = E09694392D0CFA9C00A65712 /* Build configuration list for PBXNativeTarget "PlutoSwiftSDKTests" */;
-			buildPhases = (
-				E09694282D0CFA9C00A65712 /* Sources */,
-				E09694292D0CFA9C00A65712 /* Frameworks */,
-				E096942A2D0CFA9C00A65712 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				E096942F2D0CFA9C00A65712 /* PBXTargetDependency */,
-			);
-			name = PlutoSwiftSDKTests;
-			productName = "pluto-swift-sdkTests";
-			productReference = E096942C2D0CFA9C00A65712 /* PlutoSwiftSDKTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
 		};
 		E0BF04E72D1217DA00AB3BFB /* PlutoSDKTestApp */ = {
 			isa = PBXNativeTarget;
@@ -250,10 +275,10 @@
 				LastSwiftUpdateCheck = 1520;
 				LastUpgradeCheck = 1520;
 				TargetAttributes = {
-					E09694212D0CFA9C00A65712 = {
+					E04E17922D122AA1006DBB0B = {
 						CreatedOnToolsVersion = 15.2;
 					};
-					E096942B2D0CFA9C00A65712 = {
+					E09694212D0CFA9C00A65712 = {
 						CreatedOnToolsVersion = 15.2;
 					};
 					E0BF04E72D1217DA00AB3BFB = {
@@ -275,21 +300,21 @@
 			projectRoot = "";
 			targets = (
 				E09694212D0CFA9C00A65712 /* PlutoSwiftSDK */,
-				E096942B2D0CFA9C00A65712 /* PlutoSwiftSDKTests */,
 				E0BF04E72D1217DA00AB3BFB /* PlutoSDKTestApp */,
+				E04E17922D122AA1006DBB0B /* PlutoSwiftSDKTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		E09694202D0CFA9C00A65712 /* Resources */ = {
+		E04E17912D122AA1006DBB0B /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		E096942A2D0CFA9C00A65712 /* Resources */ = {
+		E09694202D0CFA9C00A65712 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -309,22 +334,25 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		E04E178F2D122AA1006DBB0B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E04E179D2D122AB0006DBB0B /* PlutoSwiftSDKTest.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		E096941E2D0CFA9C00A65712 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				E09694272D0CFA9C00A65712 /* PlutoSwiftSDK.docc in Sources */,
 				E0BF05072D121DBA00AB3BFB /* Prover.swift in Sources */,
+				E0BF050C2D12262700AB3BFB /* Enums.swift in Sources */,
+				E0BF05102D12265400AB3BFB /* ManifestParser.swift in Sources */,
 				E0BF05052D121DBA00AB3BFB /* PlutoSwiftSDK.swift in Sources */,
+				E0BF050E2D12263500AB3BFB /* ManifestModels.swift in Sources */,
 				E0BF05062D121DBA00AB3BFB /* BrowserView.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		E09694282D0CFA9C00A65712 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				E09694322D0CFA9C00A65712 /* PlutoSwiftSDKTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -341,10 +369,10 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		E096942F2D0CFA9C00A65712 /* PBXTargetDependency */ = {
+		E04E17992D122AA1006DBB0B /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = E09694212D0CFA9C00A65712 /* PlutoSwiftSDK */;
-			targetProxy = E096942E2D0CFA9C00A65712 /* PBXContainerItemProxy */;
+			targetProxy = E04E17982D122AA1006DBB0B /* PBXContainerItemProxy */;
 		};
 		E0BF05002D121CD500AB3BFB /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -373,6 +401,38 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		E04E179B2D122AA1006DBB0B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 669AYKHVLZ;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = pluto.PlutoSwiftSDKTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		E04E179C2D122AA1006DBB0B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 669AYKHVLZ;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = pluto.PlutoSwiftSDKTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		E09694342D0CFA9C00A65712 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -562,40 +622,6 @@
 			};
 			name = Release;
 		};
-		E096943A2D0CFA9C00A65712 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 669AYKHVLZ;
-				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "pluto.pluto-swift-sdkTests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
-		E096943B2D0CFA9C00A65712 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 669AYKHVLZ;
-				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "pluto.pluto-swift-sdkTests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Release;
-		};
 		E0BF04F92D1217DB00AB3BFB /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -657,6 +683,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		E04E179A2D122AA1006DBB0B /* Build configuration list for PBXNativeTarget "PlutoSwiftSDKTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E04E179B2D122AA1006DBB0B /* Debug */,
+				E04E179C2D122AA1006DBB0B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		E096941C2D0CFA9C00A65712 /* Build configuration list for PBXProject "PlutoSwiftSDK" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -671,15 +706,6 @@
 			buildConfigurations = (
 				E09694372D0CFA9C00A65712 /* Debug */,
 				E09694382D0CFA9C00A65712 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		E09694392D0CFA9C00A65712 /* Build configuration list for PBXNativeTarget "PlutoSwiftSDKTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				E096943A2D0CFA9C00A65712 /* Debug */,
-				E096943B2D0CFA9C00A65712 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

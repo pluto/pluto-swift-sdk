@@ -1,5 +1,11 @@
+//
+//  PlutoSwiftSDKTests.swift
+//  PlutoSwiftSDKTests
+//
+//  Created by Andrew Jenkins on 12/17/24.
+//
+
 import XCTest
-@testable import PlutoSwiftSDK
 
 final class PlutoSwiftSDKTests: XCTestCase {
 
@@ -9,8 +15,6 @@ final class PlutoSwiftSDKTests: XCTestCase {
 
     override func tearDownWithError() throws {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
-        // basic rendering test
-        
     }
 
     func testExample() throws {
@@ -23,7 +27,7 @@ final class PlutoSwiftSDKTests: XCTestCase {
 
     func testPerformanceExample() throws {
         // This is an example of a performance test case.
-        self.measure {
+        measure {
             // Put the code you want to measure the time of here.
         }
     }
