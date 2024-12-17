@@ -61,6 +61,7 @@
 /* Begin PBXFileReference section */
 		E04E178D2D122A3D006DBB0B /* PlutoSwiftSDKTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlutoSwiftSDKTest.swift; sourceTree = "<group>"; };
 		E04E17932D122AA1006DBB0B /* PlutoSwiftSDKTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PlutoSwiftSDKTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		E04E17A02D12391E006DBB0B /* PlutoSwiftSDKTestPlan.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; name = PlutoSwiftSDKTestPlan.xctestplan; path = ../PlutoSwiftSDKTestPlan.xctestplan; sourceTree = "<group>"; };
 		E09694222D0CFA9C00A65712 /* PlutoSwiftSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PlutoSwiftSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E09694252D0CFA9C00A65712 /* PlutoSwiftSDK.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PlutoSwiftSDK.h; sourceTree = "<group>"; };
 		E09694262D0CFA9C00A65712 /* PlutoSwiftSDK.docc */ = {isa = PBXFileReference; lastKnownFileType = folder.documentationcatalog; path = PlutoSwiftSDK.docc; sourceTree = "<group>"; };
@@ -126,6 +127,7 @@
 		E09694182D0CFA9C00A65712 = {
 			isa = PBXGroup;
 			children = (
+				E04E17A02D12391E006DBB0B /* PlutoSwiftSDKTestPlan.xctestplan */,
 				E04E178B2D1229F1006DBB0B /* Tests */,
 				E0BF05092D1225CB00AB3BFB /* Sources */,
 				E0BF04E92D1217DA00AB3BFB /* PlutoSDKTestApp */,
