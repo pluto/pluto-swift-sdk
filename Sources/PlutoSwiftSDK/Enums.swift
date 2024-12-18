@@ -1,8 +1,14 @@
-//
-//  Enums.swift
-//  PlutoSwiftSDK
-//
-//  Created by Andrew Jenkins on 12/17/24.
-//
-
 import Foundation
+
+public enum Methods: String, Codable {
+    case GET = "GET"
+    case POST = "POST"
+    case PUT = "PUT"
+    case DELETE = "DELETE"
+    case PATCH = "PATCH"
+}
+
+public enum Mode: String, Codable {
+    case TLSN = "TLSN"
+    case Origo = "Origo"
+}
