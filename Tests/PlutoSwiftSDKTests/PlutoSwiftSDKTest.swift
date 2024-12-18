@@ -20,6 +20,7 @@ final class PlutoSwiftSDKTest: XCTestCase {
                 "method": "POST",
                 "url": "https://example.com/api",
                 "headers": { "Content-Type": "application/json" },
+                "vars": { "var1": { "type": "string", "length": 2 } },
                 "body": "{\\"key\\":\\"value\\"}",
                 "extra": {
                     "method": "GET",
@@ -31,8 +32,7 @@ final class PlutoSwiftSDKTest: XCTestCase {
                 "status": "200",
                 "headers": { "Server": "nginx" },
                 "body": {
-                    "json": [["key", "value"]],
-                    "contains": "success"
+                    "json": ["key", "value"]
                 }
             },
             "debugLogs": ["Log1", "Log2"]
@@ -57,6 +57,8 @@ final class PlutoSwiftSDKTest: XCTestCase {
         XCTAssertEqual(request?.url, "https://example.com/api")
         XCTAssertEqual(request?.headers["Content-Type"], "application/json")
         XCTAssertEqual(request?.body, "{\"key\":\"value\"}")
+        XCTAssertEqual(request?.vars?["var1"]?.type, "string")
+        XCTAssertEqual(request?.vars?["var1"]?.length, 2)
 
         // Verify nested 'extra' request
         let extraRequest = request?.extra
@@ -70,8 +72,7 @@ final class PlutoSwiftSDKTest: XCTestCase {
         XCTAssertNotNil(response)
         XCTAssertEqual(response?.status, "200")
         XCTAssertEqual(response?.headers["Server"], "nginx")
-        XCTAssertEqual(response?.body.json.first?.first, "key")
-        XCTAssertEqual(response?.body.contains, "success")
+        XCTAssertEqual(response?.body.json.first, "key")
 
         // Verify debugLogs
         XCTAssertEqual(manifest?.debugLogs, ["Log1", "Log2"])

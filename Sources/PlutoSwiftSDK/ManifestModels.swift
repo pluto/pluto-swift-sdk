@@ -33,12 +33,10 @@ public class ManifestFileRequest: Codable {
 
 public class ManifestFileResponse: Codable {
     public class ResponseBody: Codable {
-        public var json: [[String]]
-        public var contains: String
+        public var json: [String]
 
-        public init(json: [[String]], contains: String) {
+        public init(json: [String]) {
             self.json = json
-            self.contains = contains
         }
     }
     
