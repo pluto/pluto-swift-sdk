@@ -1,12 +1,7 @@
 import XCTest
 @testable import PlutoSwiftSDK
 
-final class PlutoSwiftSDKTest: XCTestCase {
-    func testGenerateProof() throws {
-        let proof = Prover.generateProof(config: "TestConfig")
-        XCTAssertEqual(proof, "Generated proof for: TestConfig")
-    }
-    
+final class ManifestParserTests: XCTestCase {
     func testManifestParser_WithValidJSON_ShouldParseCorrectly() {
         let jsonString = """
         {
@@ -34,8 +29,7 @@ final class PlutoSwiftSDKTest: XCTestCase {
                 "body": {
                     "json": ["key", "value"]
                 }
-            },
-            "debugLogs": ["Log1", "Log2"]
+            }
         }
         """
 
@@ -73,8 +67,5 @@ final class PlutoSwiftSDKTest: XCTestCase {
         XCTAssertEqual(response?.status, "200")
         XCTAssertEqual(response?.headers["Server"], "nginx")
         XCTAssertEqual(response?.body.json.first, "key")
-
-        // Verify debugLogs
-        XCTAssertEqual(manifest?.debugLogs, ["Log1", "Log2"])
     }
 }

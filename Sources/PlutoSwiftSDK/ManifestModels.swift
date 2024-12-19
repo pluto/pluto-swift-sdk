@@ -60,12 +60,10 @@ public struct ManifestFile: Codable {
     public var mode: Mode?
     public var request: ManifestFileRequest
     public var response: ManifestFileResponse
-    public var debugLogs: [String]?
 
     public init(manifestVersion: String, id: String, title: String, description: String,
                 prepareUrl: String? = nil, mode: Mode? = nil,
-                request: ManifestFileRequest, response: ManifestFileResponse,
-                debugLogs: [String]? = nil) {
+                request: ManifestFileRequest, response: ManifestFileResponse) {
         self.manifestVersion = manifestVersion
         self.id = id
         self.title = title
@@ -74,6 +72,5 @@ public struct ManifestFile: Codable {
         self.mode = mode
         self.request = request
         self.response = response
-        self.debugLogs = debugLogs
     }
 }
