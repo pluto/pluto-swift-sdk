@@ -24,27 +24,7 @@ final class ProverTests: XCTestCase {
         }
         """
 
-        let manifest = ManifestFile(
-            manifestVersion: "1.0",
-            id: "test-id",
-            title: "Test Manifest",
-            description: "A test manifest",
-            prepareUrl: nil,
-            mode: .Origo,
-            request: ManifestFileRequest(
-                method: .POST,
-                url: "https://example.com",
-                headers: ["Content-Type": "application/json"],
-                body: "{\"key\":\"value\"}"
-            ),
-            response: ManifestFileResponse(
-                status: "200",
-                headers: ["Server": "nginx"],
-                body: ManifestFileResponse.ResponseBody(
-                    json: ["key", "value"]
-                )
-            )
-        )
+        let manifest = ManifestTestFactory.makeManifest() as! ManifestFile
 
         var statusUpdates: [ProofStatus] = []
 
@@ -66,27 +46,12 @@ final class ProverTests: XCTestCase {
         let prover = MockProver()
         prover.shouldThrowError = true
 
-        let manifest = ManifestFile(
-            manifestVersion: "1.0",
-            id: "test-id",
-            title: "Test Manifest",
-            description: "A test manifest",
-            prepareUrl: nil,
+        let manifest = ManifestTestFactory.makeManifest(
             mode: .TLSN,
-            request: ManifestFileRequest(
-                method: .GET,
-                url: "https://example.com",
-                headers: [:],
-                body: nil
-            ),
-            response: ManifestFileResponse(
-                status: "404",
-                headers: [:],
-                body: ManifestFileResponse.ResponseBody(
-                    json: []
-                )
-            )
-        )
+            requestMethod: .GET,
+            responseStatus: "404",
+            responseJson: []
+        ) as! ManifestFile
 
         var statusUpdates: [ProofStatus] = []
 
@@ -104,5 +69,4 @@ final class ProverTests: XCTestCase {
             XCTAssertEqual(statusUpdates, [.loading, .failure], "Expected status updates to be [.loading, .failure].")
         }
     }
-
 }

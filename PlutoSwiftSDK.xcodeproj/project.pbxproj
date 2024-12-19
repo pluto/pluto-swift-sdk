@@ -13,6 +13,7 @@
 		E09694332D0CFA9C00A65712 /* PlutoSwiftSDK.h in Headers */ = {isa = PBXBuildFile; fileRef = E09694252D0CFA9C00A65712 /* PlutoSwiftSDK.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E0B618472D14B9CE00355AA4 /* ProverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0B618462D14B9CE00355AA4 /* ProverTests.swift */; };
 		E0B618492D14C20200355AA4 /* PlutoSwiftSDKTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0B618482D14C20200355AA4 /* PlutoSwiftSDKTests.swift */; };
+		E0B6184B2D14C45100355AA4 /* ManifestTestFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0B6184A2D14C45100355AA4 /* ManifestTestFactory.swift */; };
 		E0BF04EB2D1217DA00AB3BFB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0BF04EA2D1217DA00AB3BFB /* AppDelegate.swift */; };
 		E0BF04ED2D1217DA00AB3BFB /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0BF04EC2D1217DA00AB3BFB /* SceneDelegate.swift */; };
 		E0BF04EF2D1217DA00AB3BFB /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0BF04EE2D1217DA00AB3BFB /* ViewController.swift */; };
@@ -69,6 +70,7 @@
 		E09694262D0CFA9C00A65712 /* PlutoSwiftSDK.docc */ = {isa = PBXFileReference; lastKnownFileType = folder.documentationcatalog; path = PlutoSwiftSDK.docc; sourceTree = "<group>"; };
 		E0B618462D14B9CE00355AA4 /* ProverTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProverTests.swift; sourceTree = "<group>"; };
 		E0B618482D14C20200355AA4 /* PlutoSwiftSDKTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlutoSwiftSDKTests.swift; sourceTree = "<group>"; };
+		E0B6184A2D14C45100355AA4 /* ManifestTestFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManifestTestFactory.swift; sourceTree = "<group>"; };
 		E0BF04E82D1217DA00AB3BFB /* PlutoSDKTestApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PlutoSDKTestApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E0BF04EA2D1217DA00AB3BFB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E0BF04EC2D1217DA00AB3BFB /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -123,6 +125,7 @@
 		E04E178C2D122A16006DBB0B /* PlutoSwiftSDKTests */ = {
 			isa = PBXGroup;
 			children = (
+				E0B6184A2D14C45100355AA4 /* ManifestTestFactory.swift */,
 				E04E178D2D122A3D006DBB0B /* ManifestParserTests.swift */,
 				E0B618462D14B9CE00355AA4 /* ProverTests.swift */,
 				E0B618482D14C20200355AA4 /* PlutoSwiftSDKTests.swift */,
@@ -349,6 +352,7 @@
 				E04E179D2D122AB0006DBB0B /* ManifestParserTests.swift in Sources */,
 				E0B618492D14C20200355AA4 /* PlutoSwiftSDKTests.swift in Sources */,
 				E0B618472D14B9CE00355AA4 /* ProverTests.swift in Sources */,
+				E0B6184B2D14C45100355AA4 /* ManifestTestFactory.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

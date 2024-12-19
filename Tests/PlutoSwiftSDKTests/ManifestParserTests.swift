@@ -2,70 +2,61 @@ import XCTest
 @testable import PlutoSwiftSDK
 
 final class ManifestParserTests: XCTestCase {
-    func testManifestParser_WithValidJSON_ShouldParseCorrectly() {
-        let jsonString = """
-        {
-            "manifestVersion": "1.0",
-            "id": "1234",
-            "title": "Test Manifest",
-            "description": "This is a test.",
-            "prepareUrl": "https://example.com/prepare",
-            "mode": "TLSN",
-            "request": {
-                "method": "POST",
-                "url": "https://example.com/api",
-                "headers": { "Content-Type": "application/json" },
-                "vars": { "var1": { "type": "string", "length": 2 } },
-                "body": "{\\"key\\":\\"value\\"}",
-                "extra": {
-                    "method": "GET",
-                    "url": "https://example.com/extra",
-                    "headers": { "Accept": "application/json" }
-                }
-            },
-            "response": {
-                "status": "200",
-                "headers": { "Server": "nginx" },
-                "body": {
-                    "json": ["key", "value"]
-                }
-            }
-        }
-        """
+    var manifestAsString: String!
+    var manifest: ManifestFile!
 
-        let manifest = ManifestParser.parseManifest(from: jsonString)
-        
-        // Assert: Verify parsed content
-        XCTAssertNotNil(manifest, "Manifest should not be nil")
-        XCTAssertEqual(manifest?.manifestVersion, "1.0")
-        XCTAssertEqual(manifest?.id, "1234")
-        XCTAssertEqual(manifest?.title, "Test Manifest")
-        XCTAssertEqual(manifest?.description, "This is a test.")
-        XCTAssertEqual(manifest?.prepareUrl, "https://example.com/prepare")
-        XCTAssertEqual(manifest?.mode, .TLSN)
+    override func setUp() {
+        super.setUp()
+        manifestAsString = ManifestTestFactory.makeManifest(asJSONString: true) as? String
+        manifest = ManifestTestFactory.makeManifest() as? ManifestFile
+    }
+
+    func testManifestParser_WithValidJSON_ShouldParseCorrectly() {
+        // Arrange
+        guard let manifestAsString = ManifestTestFactory.makeManifest(asJSONString: true) as? String else {
+            XCTFail("Failed to generate manifest JSON string.")
+            return
+        }
+        let expectedManifest = ManifestTestFactory.makeManifest() as? ManifestFile
+
+        // Act
+        let _manifest = ManifestParser.parseManifest(from: manifestAsString)
+
+        // Assert
+        XCTAssertNotNil(_manifest, "Manifest should not be nil")
+        XCTAssertEqual(_manifest?.manifestVersion, expectedManifest?.manifestVersion)
+        XCTAssertEqual(_manifest?.id, expectedManifest?.id)
+        XCTAssertEqual(_manifest?.title, expectedManifest?.title)
+        XCTAssertEqual(_manifest?.description, expectedManifest?.description)
+        XCTAssertEqual(_manifest?.prepareUrl, expectedManifest?.prepareUrl)
+        XCTAssertEqual(_manifest?.mode, expectedManifest?.mode)
 
         // Verify request
-        let request = manifest?.request
+        let request = _manifest?.request
         XCTAssertNotNil(request)
-        XCTAssertEqual(request?.method, .POST)
-        XCTAssertEqual(request?.url, "https://example.com/api")
-        XCTAssertEqual(request?.headers["Content-Type"], "application/json")
-        XCTAssertEqual(request?.body, "{\"key\":\"value\"}")
-        XCTAssertEqual(request?.vars?["var1"]?.type, "string")
-        XCTAssertEqual(request?.vars?["var1"]?.length, 2)
+        XCTAssertEqual(request?.method, expectedManifest?.request.method)
+        XCTAssertEqual(request?.url, expectedManifest?.request.url)
+        XCTAssertEqual(request?.headers["Content-Type"], expectedManifest?.request.headers["Content-Type"])
+        XCTAssertEqual(request?.body, expectedManifest?.request.body)
 
-        // Verify nested 'extra' request
+        // Verify vars
+        XCTAssertEqual(request?.vars?["var1"]?.type, expectedManifest?.request.vars?["var1"]?.type)
+        XCTAssertEqual(request?.vars?["var1"]?.regex, expectedManifest?.request.vars?["var1"]?.regex)
+        XCTAssertEqual(request?.vars?["var1"]?.length, expectedManifest?.request.vars?["var1"]?.length)
+
+        // Verify nested `extra` request
         let extraRequest = request?.extra
         XCTAssertNotNil(extraRequest)
-        XCTAssertEqual(extraRequest?.method, .GET)
-        XCTAssertEqual(extraRequest?.url, "https://example.com/extra")
-        XCTAssertEqual(extraRequest?.headers["Accept"], "application/json")
+        XCTAssertEqual(extraRequest?.method, expectedManifest?.request.extra?.method)
+        XCTAssertEqual(extraRequest?.url, expectedManifest?.request.extra?.url)
+        XCTAssertEqual(extraRequest?.headers["Accept"], expectedManifest?.request.extra?.headers["Accept"])
 
         // Verify response
-        let response = manifest?.response
+        let response = _manifest?.response
         XCTAssertNotNil(response)
-        XCTAssertEqual(response?.status, "200")
-        XCTAssertEqual(response?.headers["Server"], "nginx")
-        XCTAssertEqual(response?.body.json.first, "key")
+        XCTAssertEqual(response?.status, expectedManifest?.response.status)
+        XCTAssertEqual(response?.headers["Server"], expectedManifest?.response.headers["Server"])
+        XCTAssertEqual(response?.body.json.first, expectedManifest?.response.body.json.first)
     }
+
 }
