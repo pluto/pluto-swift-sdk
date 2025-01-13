@@ -1,0 +1,4 @@
+module ProverBinary {
+    header "Prover.h"
+    export *
+}

@@ -9,6 +9,10 @@
 /* Begin PBXBuildFile section */
 		E04E17972D122AA1006DBB0B /* PlutoSwiftSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E09694222D0CFA9C00A65712 /* PlutoSwiftSDK.framework */; };
 		E04E179D2D122AB0006DBB0B /* ManifestParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E04E178D2D122A3D006DBB0B /* ManifestParserTests.swift */; };
+		E06A10FA2D3588EB00AE0F57 /* RedditKarmaProofService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E06A10F92D3588EB00AE0F57 /* RedditKarmaProofService.swift */; };
+		E06A10FF2D35AD9D00AE0F57 /* prover-ios-device.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E06A10FE2D35AD9D00AE0F57 /* prover-ios-device.a */; };
+		E06A11012D35B1E800AE0F57 /* Prover.h in Headers */ = {isa = PBXBuildFile; fileRef = E06A11002D35B1E800AE0F57 /* Prover.h */; };
+		E06A11032D35B47800AE0F57 /* PlutoSwiftSDK-Bridging-Header.h in Headers */ = {isa = PBXBuildFile; fileRef = E06A11022D35B47800AE0F57 /* PlutoSwiftSDK-Bridging-Header.h */; };
 		E09694272D0CFA9C00A65712 /* PlutoSwiftSDK.docc in Sources */ = {isa = PBXBuildFile; fileRef = E09694262D0CFA9C00A65712 /* PlutoSwiftSDK.docc */; };
 		E09694332D0CFA9C00A65712 /* PlutoSwiftSDK.h in Headers */ = {isa = PBXBuildFile; fileRef = E09694252D0CFA9C00A65712 /* PlutoSwiftSDK.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E0B618472D14B9CE00355AA4 /* ProverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0B618462D14B9CE00355AA4 /* ProverTests.swift */; };
@@ -65,6 +69,11 @@
 		E04E178D2D122A3D006DBB0B /* ManifestParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManifestParserTests.swift; sourceTree = "<group>"; };
 		E04E17932D122AA1006DBB0B /* PlutoSwiftSDKTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PlutoSwiftSDKTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E04E17A02D12391E006DBB0B /* PlutoSwiftSDKTestPlan.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; name = PlutoSwiftSDKTestPlan.xctestplan; path = ../PlutoSwiftSDKTestPlan.xctestplan; sourceTree = "<group>"; };
+		E06A10F92D3588EB00AE0F57 /* RedditKarmaProofService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RedditKarmaProofService.swift; sourceTree = "<group>"; };
+		E06A10FE2D35AD9D00AE0F57 /* prover-ios-device.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = "prover-ios-device.a"; sourceTree = "<group>"; };
+		E06A11002D35B1E800AE0F57 /* Prover.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Prover.h; sourceTree = "<group>"; };
+		E06A11022D35B47800AE0F57 /* PlutoSwiftSDK-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PlutoSwiftSDK-Bridging-Header.h"; sourceTree = "<group>"; };
+		E06A11052D35B80F00AE0F57 /* module.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = "<group>"; };
 		E09694222D0CFA9C00A65712 /* PlutoSwiftSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PlutoSwiftSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E09694252D0CFA9C00A65712 /* PlutoSwiftSDK.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PlutoSwiftSDK.h; sourceTree = "<group>"; };
 		E09694262D0CFA9C00A65712 /* PlutoSwiftSDK.docc */ = {isa = PBXFileReference; lastKnownFileType = folder.documentationcatalog; path = PlutoSwiftSDK.docc; sourceTree = "<group>"; };
@@ -100,6 +109,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E06A10FF2D35AD9D00AE0F57 /* prover-ios-device.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -133,6 +143,15 @@
 			path = PlutoSwiftSDKTests;
 			sourceTree = "<group>";
 		};
+		E06A11062D35BD0800AE0F57 /* include */ = {
+			isa = PBXGroup;
+			children = (
+				E06A11002D35B1E800AE0F57 /* Prover.h */,
+				E06A11052D35B80F00AE0F57 /* module.modulemap */,
+			);
+			path = include;
+			sourceTree = "<group>";
+		};
 		E09694182D0CFA9C00A65712 = {
 			isa = PBXGroup;
 			children = (
@@ -158,6 +177,7 @@
 		E09694242D0CFA9C00A65712 /* PlutoSwiftSDK */ = {
 			isa = PBXGroup;
 			children = (
+				E06A11062D35BD0800AE0F57 /* include */,
 				E0BF05042D121DBA00AB3BFB /* BrowserView.swift */,
 				E0BF050B2D12262700AB3BFB /* Enums.swift */,
 				E0BF050D2D12263500AB3BFB /* ManifestModels.swift */,
@@ -166,6 +186,7 @@
 				E0BF05022D121DBA00AB3BFB /* Prover.swift */,
 				E09694252D0CFA9C00A65712 /* PlutoSwiftSDK.h */,
 				E09694262D0CFA9C00A65712 /* PlutoSwiftSDK.docc */,
+				E06A11022D35B47800AE0F57 /* PlutoSwiftSDK-Bridging-Header.h */,
 			);
 			path = PlutoSwiftSDK;
 			sourceTree = "<group>";
@@ -173,6 +194,7 @@
 		E0BF04E92D1217DA00AB3BFB /* PlutoSDKTestApp */ = {
 			isa = PBXGroup;
 			children = (
+				E06A10F92D3588EB00AE0F57 /* RedditKarmaProofService.swift */,
 				E0BF04EA2D1217DA00AB3BFB /* AppDelegate.swift */,
 				E0BF04EC2D1217DA00AB3BFB /* SceneDelegate.swift */,
 				E0BF04EE2D1217DA00AB3BFB /* ViewController.swift */,
@@ -194,6 +216,7 @@
 		E0BF05082D121DBE00AB3BFB /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				E06A10FE2D35AD9D00AE0F57 /* prover-ios-device.a */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -214,6 +237,8 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E06A11032D35B47800AE0F57 /* PlutoSwiftSDK-Bridging-Header.h in Headers */,
+				E06A11012D35B1E800AE0F57 /* Prover.h in Headers */,
 				E09694332D0CFA9C00A65712 /* PlutoSwiftSDK.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -377,6 +402,7 @@
 				E0BF04EF2D1217DA00AB3BFB /* ViewController.swift in Sources */,
 				E0BF04EB2D1217DA00AB3BFB /* AppDelegate.swift in Sources */,
 				E0BF04ED2D1217DA00AB3BFB /* SceneDelegate.swift in Sources */,
+				E06A10FA2D3588EB00AE0F57 /* RedditKarmaProofService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -501,6 +527,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "$(PROJECT_ROOT)/Sources/$(PROJECT_NAME)";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
@@ -508,6 +535,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_INCLUDE_PATHS = "$(PROJECT_PATH)/Sources/PlutoSwiftSDK";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
@@ -562,12 +590,14 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "$(PROJECT_ROOT)/Sources/$(PROJECT_NAME)";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_INCLUDE_PATHS = "$(PROJECT_PATH)/Sources/PlutoSwiftSDK";
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
@@ -586,20 +616,32 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				ENABLE_MODULE_VERIFIER = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/Sources/PlutoSwiftSDK/include";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Sources/Resources",
+				);
 				MARKETING_VERSION = 1.0;
 				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
+				OTHER_LDFLAGS = (
+					"-lc++",
+					"-lc++",
+					"-lc++",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = "pluto.pluto-swift-sdk";
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_INCLUDE_PATHS = "$(PROJECT_DIR)/Sources/PlutoSwiftSDK/include";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -617,20 +659,32 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				ENABLE_MODULE_VERIFIER = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/Sources/PlutoSwiftSDK/include";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Sources/Resources",
+				);
 				MARKETING_VERSION = 1.0;
 				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
+				OTHER_LDFLAGS = (
+					"-lc++",
+					"-lc++",
+					"-lc++",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = "pluto.pluto-swift-sdk";
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_INCLUDE_PATHS = "$(PROJECT_DIR)/Sources/PlutoSwiftSDK/include";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
