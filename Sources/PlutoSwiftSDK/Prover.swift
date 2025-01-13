@@ -16,7 +16,7 @@ struct RawProverResponse: Codable {
 import Foundation
 
 public class Prover {
-    private let notaryHost = "notary.pluto.dev"
+    private let notaryHost = "4f630ed.notary.pluto.dev"
     private let notaryPort = 443
     private let maxSentData = 10000
     private let maxRecvData = 10000
