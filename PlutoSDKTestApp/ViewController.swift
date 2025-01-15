@@ -76,6 +76,8 @@ class ViewController: UIViewController {
         return indicator
     }()
 
+    private var requestBuilder: RequestBuilder?
+
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
@@ -122,11 +124,26 @@ class ViewController: UIViewController {
     }
 
     @objc private func openBrowserTapped() {
-        let browserView = BrowserView()
-        browserView.onClose = { [weak self] in
-            self?.statusLabel.text = "Browser closed"
+        requestBuilder = RequestBuilder(parentViewController: self)
+        requestBuilder?.onManifestConstructed = { [weak self] updatedManifest in
+            // Handle the constructed manifest
+            self?.statusLabel.text = "Manifest constructed"
+
+            // You could start the proof generation here
+            Task {
+                do {
+                    let proofResult = try await PlutoSwiftSDK.generateProof(manifest: updatedManifest) { status in
+                        print("Proof status changed: \(status)")
+                    }
+                    self?.statusLabel.text = "Proof generated: \(proofResult)"
+                } catch {
+                    self?.statusLabel.text = "Error generating proof: \(error.localizedDescription)"
+                }
+            }
         }
-        browserView.present(with: manifest, in: self)
+
+        // Show the browser with our manifest
+        requestBuilder?.showBrowserView(with: manifest)
     }
 
 }

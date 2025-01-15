@@ -1,94 +1,117 @@
-import SwiftUI
+import UIKit
 import WebKit
 
-struct Injector: UIViewRepresentable {
-    /// Data to inject
-    let manifest: ManifestFile
-    let cookies: [HTTPCookie]
-    
-    /// The communication callback
-    /// - Parameter message: String message coming from JS
-    let onMessage: (String) -> Void
-    
-    func makeCoordinator() -> Coordinator {
-        Coordinator(onMessage: onMessage)
-    }
-    
-    func makeUIView(context: Context) -> WKWebView {
-        // 1) Prepare a WKWebViewConfiguration
+public class Injector: UIView, WKScriptMessageHandler {
+    private let webView: WKWebView
+    private var manifest: ManifestFile
+    public var onComplete: ((ManifestFile) -> Void)?
+
+    // Keep track of the current cookies + DOM
+    private var currentCookies: [HTTPCookie]
+    private var currentDOM: String
+
+    public init(manifest: ManifestFile, cookies: [HTTPCookie], initialDOM: String) {
+        print("IN")
+        self.manifest = manifest
+        self.currentCookies = cookies
+        self.currentDOM = initialDOM
+
         let config = WKWebViewConfiguration()
-        
-        // 2) Set up our script message handler
-        let userContentController = WKUserContentController()
-        userContentController.add(context.coordinator, name: "swiftChannel")
-        config.userContentController = userContentController
-        
-        // 3) Create the WKWebView
-        let webView = WKWebView(frame: .zero, configuration: config)
-        webView.navigationDelegate = context.coordinator
-        
-        // 4) Load a trivial HTML so we have a DOM
-        let html = "<html><body></body></html>"
-        webView.loadHTMLString(html, baseURL: nil)
-        
-        // 5) Insert cookies
-        //    A) Programmatically via `document.cookie = ...` (simplest),
-        //       or B) Use WKHTTPCookieStore if you need them to persist.
-        cookies.forEach { cookie in
-            let jsCookie = """
-            document.cookie = "\(cookie.name)=\(cookie.value)";
-            """
-            let userScript = WKUserScript(source: jsCookie,
-                                          injectionTime: .atDocumentStart,
-                                          forMainFrameOnly: false)
-            userContentController.addUserScript(userScript)
-        }
-        
-        // 6) Inject manifest as JS variable
-        if let manifestData = try? JSONEncoder().encode(manifest),
-           let manifestJSON = String(data: manifestData, encoding: .utf8) {
-            let injectManifestJS = """
-            window.__MANIFEST__ = \(manifestJSON);
-            """
-            let userScript = WKUserScript(source: injectManifestJS,
-                                          injectionTime: .atDocumentEnd,
-                                          forMainFrameOnly: false)
-            userContentController.addUserScript(userScript)
-        }
-        
-        // The webView is not visible, so you might size it to 0x0
-        // or place it off-screen in SwiftUI.
+        let contentController = WKUserContentController()
+        config.userContentController = contentController
+
+        self.webView = WKWebView(frame: .zero, configuration: config)
+        super.init(frame: .zero)
+
+        contentController.add(self, name: "jsToSwift")
+
+        webView.navigationDelegate = self
         webView.isHidden = true
-        
-        return webView
+        addSubview(webView)
+        webView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            webView.topAnchor.constraint(equalTo: topAnchor),
+            webView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            webView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            webView.bottomAnchor.constraint(equalTo: bottomAnchor)
+        ])
+
+        // Set cookies
+        injectCookies(cookies)
+
+        // Load minimal HTML
+        let html = """
+        <html>
+        <body>
+        <script>
+          // JS can send messages back to Swift:
+           window.webkit.messageHandlers.jsToSwift.postMessage({ updatedManifest: {} });
+        </script>
+        </body>
+        </html>
+        """
+        webView.loadHTMLString(html, baseURL: nil)
     }
-    
-    func updateUIView(_ uiView: WKWebView, context: Context) {
-        // No-op; we’re just injecting once on creation.
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
-    
-    // MARK: - Coordinator
-    
-    class Coordinator: NSObject, WKNavigationDelegate, WKScriptMessageHandler {
-        let onMessage: (String) -> Void
-        
-        init(onMessage: @escaping (String) -> Void) {
-            self.onMessage = onMessage
-        }
-        
-        // Handle JS messages: `window.webkit.messageHandlers.swiftChannel.postMessage(...)`
-        func userContentController(_ userContentController: WKUserContentController,
-                                   didReceive message: WKScriptMessage) {
-            guard message.name == "swiftChannel" else { return }
-            
-            if let bodyStr = message.body as? String {
-                onMessage(bodyStr)
+
+    // Update data with new cookies + DOM from the BrowserView
+    public func updateData(cookies: [HTTPCookie], dom: String) {
+        currentCookies = cookies
+        currentDOM = dom
+
+        // Re-inject cookies into the WKWebView
+        injectCookies(cookies)
+
+        // Optionally, evaluate JS passing the updated DOM
+        let escapedDOM = escapeForJSString(dom)
+        let js = "window.latestDOM = \(escapedDOM);"
+        webView.evaluateJavaScript(js, completionHandler: nil)
+    }
+
+    // Called when the injector is done
+    public func close() {
+        removeFromSuperview()
+    }
+
+    // MARK: - WKScriptMessageHandler
+    public func userContentController(_ userContentController: WKUserContentController,
+                                      didReceive message: WKScriptMessage) {
+        if message.name == "jsToSwift" {
+            print("Message Received: ", message.body)
+            // Possibly parse updated manifest from JS
+            if let body = message.body as? [String: Any],
+               let updatedManifestDict = body["updatedManifest"] as? [String: Any] {
+                // decode or transform as needed
+                // For brevity, assume we just call onComplete with the existing manifest
+//                onComplete?(manifest)
             }
         }
-        
-        // WKNavigationDelegate methods if you need them
-        func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-            // e.g., confirm load
+    }
+
+    private func injectCookies(_ cookies: [HTTPCookie]) {
+        let store = webView.configuration.websiteDataStore.httpCookieStore
+        for cookie in cookies {
+            store.setCookie(cookie)
         }
+    }
+
+    private func escapeForJSString(_ raw: String) -> String {
+        // Minimal escaping example
+        return "\"" + raw
+            .replacingOccurrences(of: "\\", with: "\\\\")
+            .replacingOccurrences(of: "\"", with: "\\\"")
+            .replacingOccurrences(of: "\n", with: "\\n") + "\""
+    }
+}
+
+extension Injector: WKNavigationDelegate {
+    public func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+        // You could also inject the initial DOM or manifest here
+        let escapedDOM = escapeForJSString(currentDOM)
+        let js = "window.latestDOM = \(escapedDOM);"
+        webView.evaluateJavaScript(js, completionHandler: nil)
     }
 }
