@@ -2,14 +2,14 @@ import Foundation
 
 public struct AnyCodable: Codable {
     public let value: Any
-    
+
     public init(_ value: Any) {
         self.value = value
     }
-    
+
     public init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
-        
+
         if let intValue = try? container.decode(Int.self) {
             value = intValue
         } else if let doubleValue = try? container.decode(Double.self) {
@@ -31,10 +31,10 @@ public struct AnyCodable: Codable {
             )
         }
     }
-    
+
     public func encode(to encoder: Encoder) throws {
         var container = encoder.singleValueContainer()
-        
+
         switch value {
         case let intValue as Int:
             try container.encode(intValue)
@@ -71,7 +71,7 @@ public struct ManifestVars: Codable {
     public var type: String?
     public var regex: String?
     public var length: Int?
-    
+
     public init(type: String? = nil, regex: String? = nil, length: Int? = nil) {
         self.type = type
         self.regex = regex
@@ -135,7 +135,7 @@ public class ManifestFileResponse: Codable {
             self.json = json
         }
     }
-    
+
     public var status: String
     public var headers: [String: String]
     public var body: ResponseBody
@@ -168,5 +168,74 @@ public struct ManifestFile: Codable {
         self.mode = mode
         self.request = request
         self.response = response
+    }
+}
+
+extension HTTPCookie: @retroactive Encodable {
+    enum CodingKeys: String, CodingKey {
+        case name
+        case value
+        case domain
+        case path
+        case expiresDate
+        case isSecure
+        case isHTTPOnly
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(name, forKey: .name)
+        try container.encode(value, forKey: .value)
+        try container.encode(domain, forKey: .domain)
+        try container.encode(path, forKey: .path)
+        // Expires date can be nil
+        if let expires = expiresDate {
+            try container.encode(expires, forKey: .expiresDate)
+        }
+        try container.encode(isSecure, forKey: .isSecure)
+        try container.encode(isHTTPOnly, forKey: .isHTTPOnly)
+    }
+}
+
+
+// Add this extension to help with JSON conversion
+extension Encodable {
+    func toJSONString() throws -> String {
+        let encoder = JSONEncoder()
+        // Convert snake_case to camelCase if needed
+        encoder.keyEncodingStrategy = .useDefaultKeys
+        // Handle dates if needed
+        encoder.dateEncodingStrategy = .iso8601
+
+        let data = try encoder.encode(self)
+        guard let string = String(data: data, encoding: .utf8) else {
+            throw EncodingError.invalidValue(self, EncodingError.Context(
+                codingPath: [],
+                debugDescription: "Failed to convert encoded data to string"
+            ))
+        }
+        return string
+    }
+}
+
+// Add specific extension for HTTPCookie array since it's not Codable by default
+extension Array where Element == HTTPCookie {
+    func toJSONString() throws -> String {
+        let cookieDicts = self.map { cookie -> [String: Any] in
+            return [
+                "name": cookie.name,
+                "value": cookie.value,
+                "domain": cookie.domain,
+                "path": cookie.path
+            ]
+        }
+        let data = try JSONSerialization.data(withJSONObject: cookieDicts)
+        guard let string = String(data: data, encoding: .utf8) else {
+            throw EncodingError.invalidValue(self, EncodingError.Context(
+                codingPath: [],
+                debugDescription: "Failed to convert cookie data to string"
+            ))
+        }
+        return string
     }
 }

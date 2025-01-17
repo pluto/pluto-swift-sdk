@@ -17,7 +17,7 @@ public class RequestBuilder {
     }
 
     // MARK: - Show Browser
-    public func showBrowserView(with manifest: ManifestFile) {
+    public func showBrowserView(with manifest: ManifestFile, prepareJS: String? = nil) {
         guard let parentVC = parentVC else { return }
 
         let browser = BrowserView()
@@ -25,12 +25,9 @@ public class RequestBuilder {
 
         // When the BrowserView captures data:
         browser.onCapture = { [weak self] cookies, dom in
-            // Add dispatch to main queue and guard self
             DispatchQueue.main.async {
-                guard let self = self else {
-                    return
-                }
-                self.didCaptureData(cookies: cookies, dom: dom, manifest: manifest)
+                guard let self = self else { return }
+                self.didCaptureData(cookies: cookies, dom: dom, manifest: manifest, prepareJS: prepareJS)
             }
         }
 
@@ -41,20 +38,35 @@ public class RequestBuilder {
     // 1) Called once we have initial cookies/DOM/manifest
     // 2) If the Injector doesn’t exist yet, create it now
     // 3) Otherwise, update the existing Injector
-    private func didCaptureData(cookies: [HTTPCookie], dom: String, manifest: ManifestFile) {
+    private func didCaptureData(cookies: [HTTPCookie],
+                                dom: String,
+                                manifest: ManifestFile,
+                                prepareJS: String?) {
+        // Transform cookies into a dictionary keyed by cookie name
+        let cookiesDict = self.cookiesDictionary(from: cookies)
+
         // If no injector yet, create one
         if injector == nil {
-            createInjector(manifest: manifest, cookies: cookies, dom: dom)
+            createInjector(manifest: manifest,
+                           cookies: cookiesDict,
+                           dom: dom,
+                           prepareJS: prepareJS)
         } else {
             // If we already have an injector, just update it
-            injector?.updateData(cookies: cookies, dom: dom)
+            injector?.updateData(cookies: cookiesDict, dom: dom)
         }
     }
 
-    private func createInjector(manifest: ManifestFile, cookies: [HTTPCookie], dom: String) {
+    private func createInjector(manifest: ManifestFile,
+                                cookies: [String: HTTPCookie],
+                                dom: String,
+                                prepareJS: String?) {
         guard let parentVC = parentVC else { return }
 
-        let newInjector = Injector(manifest: manifest, cookies: cookies, initialDOM: dom)
+        let newInjector = Injector(manifest: manifest,
+                                   cookies: cookies,
+                                   initialDOM: dom,
+                                   prepareJS: prepareJS)
         self.injector = newInjector
 
         // When the Injector completes, we finalize everything
@@ -81,7 +93,8 @@ public class RequestBuilder {
 
     // This might be called multiple times whenever the BrowserView updates cookies/DOM
     public func updateInjectorData(cookies: [HTTPCookie], dom: String) {
-        injector?.updateData(cookies: cookies, dom: dom)
+        let cookiesDict = self.cookiesDictionary(from: cookies)
+        injector?.updateData(cookies: cookiesDict, dom: dom)
     }
 
     // Remove everything from memory
@@ -93,9 +106,14 @@ public class RequestBuilder {
         // Remove injector
         injector?.close()
         injector = nil
+    }
 
-        // Self-destruction pattern if you want to break reference cycles
-        // self.parentVC = nil
-        // (Then, whoever created this RequestBuilder can drop it)
+    // Helper function to convert [HTTPCookie] -> [String : HTTPCookie]
+    private func cookiesDictionary(from cookies: [HTTPCookie]) -> [String: HTTPCookie] {
+        var dict = [String: HTTPCookie]()
+        for cookie in cookies {
+            dict[cookie.name] = cookie
+        }
+        return dict
     }
 }

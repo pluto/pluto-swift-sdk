@@ -1,20 +1,141 @@
 import UIKit
 import WebKit
 
+let ManifestBuilder = """
+        class RequestImpl {
+          constructor(requestObject, nested) {
+            this.data = {};
+            this.extra = undefined;
+
+            // We don't want to recursively add the extra object to the extra object
+            if (!nested) {
+              this.extra = new RequestImpl(requestObject.extra ?? {}, true);
+            }
+            this.data = requestObject;
+          }
+
+          get(key) {
+            switch (key) {
+              case "method":
+                return this.data.method;
+              case "url":
+                return this.data.url;
+              case "headers":
+                throw new Error(
+                  "To access headers, use manifest.request.getHeader(key)"
+                );
+              case "body":
+                return this.data.body;
+              case "vars":
+                throw new Error("Vars are inaccessible");
+            }
+          }
+
+          getHeader(key) {
+            return this.data.headers?.[key];
+          }
+
+          set(key, value) {
+            const dataAsString = JSON.stringify(this.data);
+            const expression = new RegExp("<%\\\\s*" + key + "\\\\s*%>", "gi");
+            const updatedData = dataAsString.replaceAll(expression, value);
+            this.data = JSON.parse(updatedData);
+
+            return this;
+          }
+
+          compile() {
+            if (this.extra) {
+              this.data.extra = this.extra.compile?.();
+            }
+            return this.data;
+          }
+        }
+
+        class ResponseImpl {
+          constructor(responseObject) {
+            this.data = responseObject;
+          }
+
+          get(key) {
+            switch (key) {
+              case "status":
+                return this.data.status;
+              case "headers":
+                throw new Error(
+                  "To access headers, use manifest.request.getHeader(key)"
+                );
+              case "body":
+                return this.data.body;
+            }
+          }
+
+          getHeader(key) {
+            return this.data.headers?.[key];
+          }
+
+          set(key, value) {
+            const dataAsString = JSON.stringify(this.data);
+            const expression = new RegExp("<%\\\\s*" + key + "\\\\s*%>", "gi");
+            const updatedData = dataAsString.replaceAll(expression, value);
+            this.data = JSON.parse(updatedData);
+
+            return this;
+          }
+
+          compile() {
+            return this.data;
+          }
+        }
+
+        class ManifestBuilder {
+          constructor(manifest = {}) {
+            this.debugLogs = [];
+            this.manifest = manifest;
+
+            if (!manifest.request) {
+              throw new Error("manifest.request object is required");
+            }
+            if (!manifest.response) {
+              throw new Error("manifest.response object is required");
+            }
+
+            this.request = new RequestImpl(this.manifest.request);
+            this.response = new ResponseImpl(this.manifest.response);
+          }
+
+          appendDebugLog(log) {
+            this.debugLogs.push(log);
+            return this;
+          }
+
+          compile() {
+            return {
+              ...this.manifest,
+              debugLogs: this.debugLogs,
+              request: this.request.compile(),
+              response: this.response.compile(),
+            };
+          }
+        }
+        """;
+
 public class Injector: UIView, WKScriptMessageHandler {
     private let webView: WKWebView
     private var manifest: ManifestFile
+    private var prepareJS: String?
     public var onComplete: ((ManifestFile) -> Void)?
 
     // Keep track of the current cookies + DOM
-    private var currentCookies: [HTTPCookie]
+    private var currentCookies: [String: HTTPCookie]
     private var currentDOM: String
 
-    public init(manifest: ManifestFile, cookies: [HTTPCookie], initialDOM: String) {
+    public init(manifest: ManifestFile, cookies: [String: HTTPCookie], initialDOM: String, prepareJS: String? = nil) {
         print("IN")
         self.manifest = manifest
         self.currentCookies = cookies
         self.currentDOM = initialDOM
+        self.prepareJS = prepareJS
 
         let config = WKWebViewConfiguration()
         let contentController = WKUserContentController()
@@ -24,7 +145,6 @@ public class Injector: UIView, WKScriptMessageHandler {
         super.init(frame: .zero)
 
         contentController.add(self, name: "jsToSwift")
-
         webView.navigationDelegate = self
         webView.isHidden = true
         addSubview(webView)
@@ -36,39 +156,69 @@ public class Injector: UIView, WKScriptMessageHandler {
             webView.bottomAnchor.constraint(equalTo: bottomAnchor)
         ])
 
-        // Set cookies
-        injectCookies(cookies)
-
-        // Load minimal HTML
-        let html = """
-        <html>
-        <body>
-        <script>
-          // JS can send messages back to Swift:
-           window.webkit.messageHandlers.jsToSwift.postMessage({ updatedManifest: {} });
-        </script>
-        </body>
-        </html>
-        """
-        webView.loadHTMLString(html, baseURL: nil)
+        reinitializePage()
     }
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
+    private func reinitializePage() {
+        print ("reinitializePage")
+        let script = """
+                <script>
+                    \(ManifestBuilder)
+                    \(prepareJS ?? "")
+
+                    (function() {
+                    try {
+                      window.webkit.messageHandlers.jsToSwift.postMessage({ debug: "Start" });
+                      const manifestBuilder = new ManifestBuilder(\(try! manifest.toJSONString()));
+
+                      const ctx = {
+                        cookies: \(try! currentCookies.toJSONString()),
+                        doc: document.body,
+                      };
+
+                     window.webkit.messageHandlers.jsToSwift.postMessage({ debug: `
+                        cookiesLen: ${ctx.cookies.length}
+                        docLen: ${ctx.doc.length}
+                        documentLen: ${document.body}
+                        prepare: ${!!prepare}
+                        manifest: ${!!manifestBuilder}
+                     ` });
+
+                      const isReady = prepare(ctx, manifestBuilder);
+
+                      window.webkit.messageHandlers.jsToSwift.postMessage({
+                        isReady,
+                        manifest: manifestBuilder.compile(),
+                      });
+                    } catch(e) {
+                       window.webkit.messageHandlers.jsToSwift.postMessage({ debug: "Catch" + e.message });
+                    }
+                  })();
+                </script>
+        """
+
+        // Load minimal HTML
+        let html = """
+        <html>
+        <body>
+          \(currentDOM)
+          \(script)
+        </body>
+        </html>
+        """
+        webView.loadHTMLString(html, baseURL: nil)
+    }
+
     // Update data with new cookies + DOM from the BrowserView
-    public func updateData(cookies: [HTTPCookie], dom: String) {
+    public func updateData(cookies: [String: HTTPCookie], dom: String) {
         currentCookies = cookies
         currentDOM = dom
 
-        // Re-inject cookies into the WKWebView
-        injectCookies(cookies)
-
-        // Optionally, evaluate JS passing the updated DOM
-        let escapedDOM = escapeForJSString(dom)
-        let js = "window.latestDOM = \(escapedDOM);"
-        webView.evaluateJavaScript(js, completionHandler: nil)
+        reinitializePage()
     }
 
     // Called when the injector is done
@@ -80,21 +230,18 @@ public class Injector: UIView, WKScriptMessageHandler {
     public func userContentController(_ userContentController: WKUserContentController,
                                       didReceive message: WKScriptMessage) {
         if message.name == "jsToSwift" {
-            print("Message Received: ", message.body)
-            // Possibly parse updated manifest from JS
-            if let body = message.body as? [String: Any],
-               let updatedManifestDict = body["updatedManifest"] as? [String: Any] {
-                // decode or transform as needed
-                // For brevity, assume we just call onComplete with the existing manifest
-//                onComplete?(manifest)
+            if (message.body as? [String: Any])?["debug"] != nil {
+                print("Debug Message Received: ", message.body)
             }
-        }
-    }
 
-    private func injectCookies(_ cookies: [HTTPCookie]) {
-        let store = webView.configuration.websiteDataStore.httpCookieStore
-        for cookie in cookies {
-            store.setCookie(cookie)
+            else if let body = message.body as? [String: Any], let isReady = body["isReady"] as? Bool {
+                print("Body: ", body["manifest"])
+                if isReady, let updatedManifest = body["manifest"] as? [String: Any] {
+                    print("Manifest Completed", isReady)
+                    print(updatedManifest)
+                    manifest = try! ManifestFile(from: updatedManifest as! Decoder)
+                }
+            }
         }
     }
 
