@@ -67,6 +67,8 @@ public class RequestBuilder {
                                    cookies: cookies,
                                    initialDOM: dom,
                                    prepareJS: prepareJS)
+        newInjector.isHidden = true
+        newInjector.isUserInteractionEnabled = false
         self.injector = newInjector
 
         // When the Injector completes, we finalize everything

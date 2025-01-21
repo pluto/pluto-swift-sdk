@@ -24,12 +24,13 @@ public class Prover {
     public init() {}
 
     public func callProver(with configJSON: [String: Any]) async throws -> String? {
-        print("Calling Prover with config", configJSON)
+
         // Convert dictionary to JSON string
         let jsonData = try JSONSerialization.data(withJSONObject: configJSON)
         guard let jsonString = String(data: jsonData, encoding: .utf8) else {
             throw ProverError.invalidResponse
         }
+        print("Calling Prover with config", cConfig)
 
         // Convert Swift string to C string
         guard let cConfig = jsonString.cString(using: .utf8) else {
@@ -39,7 +40,7 @@ public class Prover {
 //        defer { free(cConfig) } // free it later
 
         // Call the C function (now visible to Swift)
-        guard let resultPtr = prover(cConfig) else { return nil }
+        guard let resultPtr = prover(jsonString) else { return nil }
 
         // Convert the returned C string to Swift
         let swiftResult = String(cString: resultPtr)

@@ -131,7 +131,6 @@ public class Injector: UIView, WKScriptMessageHandler {
     private var currentDOM: String
 
     public init(manifest: ManifestFile, cookies: [String: HTTPCookie], initialDOM: String, prepareJS: String? = nil) {
-        print("IN")
         self.manifest = manifest
         self.currentCookies = cookies
         self.currentDOM = initialDOM
@@ -164,7 +163,6 @@ public class Injector: UIView, WKScriptMessageHandler {
     }
 
     private func reinitializePage() {
-        print ("reinitializePage")
         let script = """
                 <script>
                     \(ManifestBuilder)
@@ -186,13 +184,14 @@ public class Injector: UIView, WKScriptMessageHandler {
                         documentLen: ${document.body}
                         prepare: ${!!prepare}
                         manifest: ${!!manifestBuilder}
+                        manifestJSON: ${JSON.stringify(manifestBuilder.compile())}
                      ` });
 
                       const isReady = prepare(ctx, manifestBuilder);
 
                       window.webkit.messageHandlers.jsToSwift.postMessage({
                         isReady,
-                        manifest: manifestBuilder.compile(),
+                        manifest: JSON.stringify(manifestBuilder.compile()),
                       });
                     } catch(e) {
                        window.webkit.messageHandlers.jsToSwift.postMessage({ debug: "Catch" + e.message });
@@ -235,11 +234,9 @@ public class Injector: UIView, WKScriptMessageHandler {
             }
 
             else if let body = message.body as? [String: Any], let isReady = body["isReady"] as? Bool {
-                print("Body: ", body["manifest"])
-                if isReady, let updatedManifest = body["manifest"] as? [String: Any] {
-                    print("Manifest Completed", isReady)
-                    print(updatedManifest)
-                    manifest = try! ManifestFile(from: updatedManifest as! Decoder)
+                if isReady, let updatedManifest = body["manifest"] as? String {
+                  print(updatedManifest)
+                    onComplete?(ManifestParser.parseManifest(from: updatedManifest)!)
                 }
             }
         }

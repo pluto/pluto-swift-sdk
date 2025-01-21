@@ -174,7 +174,6 @@ public class BrowserView: UIView, WKNavigationDelegate {
         WKWebsiteDataStore.default().httpCookieStore.getAllCookies { [weak self] cookies in
             self?.cookies = cookies
             self?.onCapture?(self?.cookies ?? [], self?.currentDOM ?? "")
-            print("Cookies updated after navigation:", cookies.map { $0.name })
         }
 
         // Capture DOM after page load
@@ -183,7 +182,6 @@ public class BrowserView: UIView, WKNavigationDelegate {
             if let html = result as? String {
                 self?.currentDOM = html
                 self?.onCapture?(self?.cookies ?? [], html)
-                print("DOM captured, length:", html.count)
             }
         }
     }
