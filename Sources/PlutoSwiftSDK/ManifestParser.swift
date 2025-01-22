@@ -1,19 +1,25 @@
 import Foundation
 
-public struct ManifestParser {
+// MARK: - ManifestParser
+public enum ManifestParser {
+    // MARK: - Public Methods
     public static func parseManifest(from jsonString: String) -> ManifestFile? {
         guard let jsonData = jsonString.data(using: .utf8) else {
-            print("Error: Invalid JSON string")
             return nil
         }
 
-        do {
-            let decoder = JSONDecoder()
-            let manifest = try decoder.decode(ManifestFile.self, from: jsonData)
-            return manifest
-        } catch {
-            print("Error decoding manifest: \(error.localizedDescription)")
-            return nil
-        }
+        return try? JSONDecoder().decode(ManifestFile.self, from: jsonData)
+    }
+
+    public static func parseManifest(from jsonData: Data) -> ManifestFile? {
+        return try? JSONDecoder().decode(ManifestFile.self, from: jsonData)
+    }
+}
+
+// MARK: - Error Handling
+extension ManifestParser {
+    public enum ParserError: Error {
+        case invalidJSON
+        case decodingFailed
     }
 }
