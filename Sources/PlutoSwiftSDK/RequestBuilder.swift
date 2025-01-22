@@ -16,6 +16,29 @@ public class RequestBuilder {
         self.parentVC = parentViewController
     }
 
+    @discardableResult
+    public func withManifestUrl(_ manifestUrl: URL) async throws -> RequestBuilder {
+        // Download and decode the manifest JSON file
+        let (manifestData, _) = try await URLSession.shared.data(from: manifestUrl)
+        let manifest = try JSONDecoder().decode(ManifestFile.self, from: manifestData)
+        self.manifest = manifest
+
+        // Construct prepare.js URL by replacing manifest filename with prepare.js
+        let prepareJsUrl = manifestUrl.deletingLastPathComponent().appendingPathComponent("prepare.js")
+
+        // Try to fetch prepare.js if it exists
+        do {
+            let (prepareJsData, _) = try await URLSession.shared.data(from: prepareJsUrl)
+            if let prepareJsString = String(data: prepareJsData, encoding: .utf8) {
+                self.prepareJS = prepareJsString
+            }
+        } catch {
+            // Silently ignore if prepare.js doesn't exist
+        }
+
+        return self
+    }
+
     // MARK: - Builder Methods
     @discardableResult
     public func withManifest(_ manifest: ManifestFile) -> RequestBuilder {

@@ -142,11 +142,7 @@ public class BrowserView: UIView, WKNavigationDelegate {
     public func present(with manifest: ManifestFile, in viewController: UIViewController) {
         self.manifest = manifest
 
-        if let prepareUrlString = manifest.prepareUrl,
-           let url = URL(string: prepareUrlString) {
-            webView.load(URLRequest(url: url))
-        }
-
+        // Add self to view hierarchy before loading URL
         translatesAutoresizingMaskIntoConstraints = false
         viewController.view.addSubview(self)
         NSLayoutConstraint.activate([
@@ -155,6 +151,14 @@ public class BrowserView: UIView, WKNavigationDelegate {
             trailingAnchor.constraint(equalTo: viewController.view.trailingAnchor),
             bottomAnchor.constraint(equalTo: viewController.view.bottomAnchor)
         ])
+
+        // Load URL after view is set up
+        if let prepareUrlString = manifest.prepareUrl,
+           let url = URL(string: prepareUrlString) {
+            DispatchQueue.main.async {
+                self.webView.load(URLRequest(url: url))
+            }
+        }
     }
 
     // MARK: - Actions
