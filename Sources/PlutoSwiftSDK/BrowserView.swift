@@ -10,10 +10,23 @@ public class BrowserView: UIView, WKNavigationDelegate {
     public var onClose: (() -> Void)?
     public var onCapture: (([HTTPCookie], String) -> Void)?
 
+    private var containerBottomConstraint: NSLayoutConstraint?
+
     // MARK: - UI Components
+    private let dimmingView: UIView = {
+        let v = UIView()
+        v.backgroundColor = UIColor.black.withAlphaComponent(0.3)
+        v.translatesAutoresizingMaskIntoConstraints = false
+        return v
+    }()
+
     private let containerView: UIView = {
         let view = UIView()
         view.backgroundColor = .systemBackground
+        view.layer.cornerRadius = 12
+        // For top corners only:
+        view.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+        view.clipsToBounds = true
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
@@ -58,13 +71,13 @@ public class BrowserView: UIView, WKNavigationDelegate {
     }()
 
     private let webView: WKWebView = {
-        let webView = WKWebView()
-        webView.scrollView.contentInsetAdjustmentBehavior = .automatic
-        webView.translatesAutoresizingMaskIntoConstraints = false
-        return webView
+        let wv = WKWebView()
+        wv.scrollView.contentInsetAdjustmentBehavior = .automatic
+        wv.translatesAutoresizingMaskIntoConstraints = false
+        return wv
     }()
 
-    // MARK: - Initialization
+    // MARK: - Init
     public override init(frame: CGRect) {
         super.init(frame: frame)
         setupLayout()
@@ -77,59 +90,63 @@ public class BrowserView: UIView, WKNavigationDelegate {
 
     // MARK: - Setup
     private func setupLayout() {
-        backgroundColor = .systemBackground
-        setupContainerView()
+        backgroundColor = .clear
+
+        // 1) Dimming view
+        addSubview(dimmingView)
+        NSLayoutConstraint.activate([
+            dimmingView.topAnchor.constraint(equalTo: topAnchor),
+            dimmingView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            dimmingView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            dimmingView.bottomAnchor.constraint(equalTo: bottomAnchor)
+        ])
+
+        // 2) Container
+        addSubview(containerView)
+
+        // We won't pin top directly. Instead we fix the container's height to fill the screen,
+        // and animate the bottom constraint from "offscreen" to "0".
+        containerBottomConstraint = containerView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 0)
+
+        NSLayoutConstraint.activate([
+            containerView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            containerView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            containerBottomConstraint!,
+            // Make the container's height = entire superview (for full-screen),
+            // or something smaller if you want a partial sheet:
+            containerView.heightAnchor.constraint(equalTo: heightAnchor)
+        ])
+
         setupTopBar()
         setupWebView()
     }
 
-    private func setupContainerView() {
-        addSubview(containerView)
-        NSLayoutConstraint.activate([
-            containerView.topAnchor.constraint(equalTo: topAnchor),
-            containerView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            containerView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            containerView.bottomAnchor.constraint(equalTo: bottomAnchor)
-        ])
-    }
-
     private func setupTopBar() {
         containerView.addSubview(topBar)
-        setupCloseButton()
-        setupTitleStack()
+        topBar.addSubview(closeButton)
+        topBar.addSubview(titleStackView)
+
+        closeButton.addTarget(self, action: #selector(closeTapped), for: .touchUpInside)
 
         NSLayoutConstraint.activate([
             topBar.topAnchor.constraint(equalTo: containerView.safeAreaLayoutGuide.topAnchor),
             topBar.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
             topBar.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
-            topBar.heightAnchor.constraint(equalToConstant: 44)
-        ])
-    }
+            topBar.heightAnchor.constraint(equalToConstant: 44),
 
-    private func setupCloseButton() {
-        topBar.addSubview(closeButton)
-        closeButton.addTarget(self, action: #selector(closeTapped), for: .touchUpInside)
-
-        NSLayoutConstraint.activate([
             closeButton.leadingAnchor.constraint(equalTo: topBar.leadingAnchor, constant: 8),
-            closeButton.centerYAnchor.constraint(equalTo: topBar.centerYAnchor)
-        ])
-    }
+            closeButton.centerYAnchor.constraint(equalTo: topBar.centerYAnchor),
 
-    private func setupTitleStack() {
-        topBar.addSubview(titleStackView)
-        NSLayoutConstraint.activate([
             titleStackView.centerXAnchor.constraint(equalTo: topBar.centerXAnchor),
             titleStackView.centerYAnchor.constraint(equalTo: topBar.centerYAnchor),
             titleStackView.leadingAnchor.constraint(greaterThanOrEqualTo: closeButton.trailingAnchor, constant: 8),
-            titleStackView.trailingAnchor.constraint(lessThanOrEqualTo: topBar.trailingAnchor, constant: -8)
+            titleStackView.trailingAnchor.constraint(lessThanOrEqualTo: topBar.trailingAnchor, constant: -8),
         ])
     }
 
     private func setupWebView() {
         containerView.addSubview(webView)
         webView.navigationDelegate = self
-
         NSLayoutConstraint.activate([
             webView.topAnchor.constraint(equalTo: topBar.bottomAnchor),
             webView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
@@ -138,11 +155,11 @@ public class BrowserView: UIView, WKNavigationDelegate {
         ])
     }
 
-    // MARK: - Public Methods
+    // MARK: - Public
     public func present(with manifest: ManifestFile, in viewController: UIViewController) {
         self.manifest = manifest
 
-        // Add self to view hierarchy before loading URL
+        // Add self to parent
         translatesAutoresizingMaskIntoConstraints = false
         viewController.view.addSubview(self)
         NSLayoutConstraint.activate([
@@ -152,19 +169,46 @@ public class BrowserView: UIView, WKNavigationDelegate {
             bottomAnchor.constraint(equalTo: viewController.view.bottomAnchor)
         ])
 
-        // Load URL after view is set up
+        // Start offscreen by setting bottom anchor constant = container height
+        // For a full screen, use the parent's bounds:
+        let screenHeight = viewController.view.bounds.height
+        containerBottomConstraint?.constant = screenHeight
+        dimmingView.alpha = 0
+
+        // Force layout
+        viewController.view.layoutIfNeeded()
+
+        // Animate upward
+        containerBottomConstraint?.constant = 0
+        UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut, animations: {
+            viewController.view.layoutIfNeeded()
+            self.dimmingView.alpha = 1
+        }, completion: nil)
+
+        // Optionally load the URL
         if let prepareUrlString = manifest.prepareUrl,
            let url = URL(string: prepareUrlString) {
-            DispatchQueue.main.async {
-                self.webView.load(URLRequest(url: url))
-            }
+            webView.load(URLRequest(url: url))
         }
     }
 
-    // MARK: - Actions
+    // Slide down & remove
+    private func dismissSheet() {
+        guard let superview = superview else { return }
+        let screenHeight = superview.bounds.height
+        containerBottomConstraint?.constant = screenHeight
+
+        UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseIn, animations: {
+            superview.layoutIfNeeded()
+            self.dimmingView.alpha = 0
+        }, completion: { _ in
+            self.removeFromSuperview()
+            self.onClose?()
+        })
+    }
+
     @objc private func closeTapped() {
-        removeFromSuperview()
-        onClose?()
+        dismissSheet()
     }
 
     // MARK: - WKNavigationDelegate
@@ -176,7 +220,6 @@ public class BrowserView: UIView, WKNavigationDelegate {
     private func updateUI() {
         let siteTitle = webView.title ?? ""
         titleLabel.text = siteTitle
-
         let isHTTPS = (webView.url?.scheme?.lowercased() == "https")
         lockImageView.isHidden = !(isHTTPS && !siteTitle.isEmpty)
         lockImageView.tintColor = .systemGreen
@@ -190,7 +233,6 @@ public class BrowserView: UIView, WKNavigationDelegate {
             self?.webView.evaluateJavaScript(javascript) { [weak self] result, _ in
                 guard let self = self,
                       let html = result as? String else { return }
-
                 self.currentDOM = html
                 self.onCapture?(cookies, html)
             }
