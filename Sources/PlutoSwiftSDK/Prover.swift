@@ -1,7 +1,7 @@
 import Foundation
 import ProverBinary
 
-
+// MARK: - Types
 public enum ProofStatus {
     case loading
     case success
@@ -13,100 +13,92 @@ struct RawProverResponse: Codable {
     let error: String?
 }
 
-import Foundation
-
+// MARK: - Prover
 public class Prover {
+    // MARK: - Properties
     private let notaryHost = "4f630ed.notary.pluto.dev"
     private let notaryPort = 443
     private let maxSentData = 10000
     private let maxRecvData = 10000
 
+    // MARK: - Initialization
     public init() {}
 
-    public func callProver(with configJSON: [String: Any]) async throws -> String? {
+    // MARK: - Public Methods
+    public func generateProof(manifest: ManifestFile, onStatusChange: ((ProofStatus) -> Void)? = nil) async throws -> String {
+        let targetBody = manifest.request.body ?? AnyCodable("")
 
-        // Convert dictionary to JSON string
+        do {
+            let config = try buildConfig(manifest: manifest, targetBody: targetBody)
+            onStatusChange?(.loading)
+
+            do {
+                let responseString = try await callProver(with: config)
+                return try handleProverResponse(responseString, onStatusChange: onStatusChange)
+            } catch {
+                onStatusChange?(.failure)
+                throw error
+            }
+        } catch {
+            throw error
+        }
+    }
+
+    // MARK: - Private Methods
+    private func buildConfig(manifest: ManifestFile, targetBody: AnyCodable) throws -> [String: Any] {
+        let base64Body = try targetBody.toBase64()
+        let manifestData = try JSONEncoder().encode(manifest)
+        guard let manifestDict = try JSONSerialization.jsonObject(with: manifestData) as? [String: Any] else {
+            throw ProverError.invalidResponse
+        }
+
+        return [
+            "mode": manifest.mode?.rawValue ?? Mode.Origo.rawValue,
+            "notary_host": notaryHost,
+            "notary_port": notaryPort,
+            "target_method": manifest.request.method.rawValue,
+            "target_url": manifest.request.url,
+            "target_headers": manifest.request.headers.merging(manifest.request.extra?.headers ?? [:]) { (_, new) in new },
+            "target_body": base64Body,
+            "max_sent_data": maxSentData,
+            "max_recv_data": maxRecvData,
+            "proving": ["manifest": manifestDict]
+        ]
+    }
+
+    private func callProver(with configJSON: [String: Any]) async throws -> String? {
         let jsonData = try JSONSerialization.data(withJSONObject: configJSON)
         guard let jsonString = String(data: jsonData, encoding: .utf8) else {
             throw ProverError.invalidResponse
         }
-        print("Calling Prover with config", cConfig)
 
-        // Convert Swift string to C string
-        guard let cConfig = jsonString.cString(using: .utf8) else {
+        guard let resultPtr = prover(jsonString) else { return nil }
+        return String(cString: resultPtr)
+    }
+
+    private func handleProverResponse(_ responseString: String?, onStatusChange: ((ProofStatus) -> Void)?) throws -> String {
+        guard let responseData = responseString?.data(using: .utf8) else {
             throw ProverError.invalidResponse
         }
 
-//        defer { free(cConfig) } // free it later
+        let response = try JSONDecoder().decode(RawProverResponse.self, from: responseData)
 
-        // Call the C function (now visible to Swift)
-        guard let resultPtr = prover(jsonString) else { return nil }
-
-        // Convert the returned C string to Swift
-        let swiftResult = String(cString: resultPtr)
-        return swiftResult
-    }
-
-    public func generateProof(manifest: ManifestFile, onStatusChange: ((ProofStatus) -> Void)? = nil) async throws -> String {
-        // Prepare the body (or a default if nil)
-        let targetBody = manifest.request.body ?? AnyCodable("")
-
-        do {
-            let base64Body = try targetBody.toBase64()
-            let manifestData = try JSONEncoder().encode(manifest)
-            guard let manifestDict = try JSONSerialization.jsonObject(with: manifestData) as? [String: Any] else {
-                throw ProverError.invalidResponse
-            }
-
-
-            let config: [String: Any] = [
-                "mode": manifest.mode?.rawValue ?? Mode.Origo.rawValue,
-                "notary_host": notaryHost,
-                "notary_port": notaryPort,
-                "target_method": manifest.request.method.rawValue,
-                "target_url": manifest.request.url,
-                "target_headers": manifest.request.headers.merging(manifest.request.extra?.headers ?? [:]) { (_, new) in new },
-                "target_body": base64Body,
-                "max_sent_data": maxSentData,
-                "max_recv_data": maxRecvData,
-                "proving": ["manifest": manifestDict]
-            ]
-
-            onStatusChange?(.loading)
-
-            do {
-                // Perform Objective-C Prover Call
-                let responseString = try await self.callProver(with: config)
-                guard let responseData = responseString?.data(using: .utf8) else {
-                    throw ProverError.invalidResponse
-                }
-
-                let response = try JSONDecoder().decode(RawProverResponse.self, from: responseData)
-
-                if let error = response.error {
-                    onStatusChange?(.failure)
-                    throw ProverError.custom(error)
-                } else if let proof = response.proof {
-                    onStatusChange?(.success)
-                    return proof
-                } else {
-                    onStatusChange?(.failure)
-                    throw ProverError.invalidResponse
-                }
-            } catch {
-                // Ensure .failure is called on any error
-                onStatusChange?(.failure)
-                throw error
-            }
-
-        } catch {
-            print("Warning: Failed to encode body to Base64: \(error)")
-            throw error
+        if let error = response.error {
+            onStatusChange?(.failure)
+            throw ProverError.custom(error)
         }
+
+        if let proof = response.proof {
+            onStatusChange?(.success)
+            return proof
+        }
+
+        onStatusChange?(.failure)
+        throw ProverError.invalidResponse
     }
 }
 
-// Prover Errors
+// MARK: - Errors
 enum ProverError: Error {
     case notImplemented
     case invalidResponse

@@ -1,5 +1,6 @@
 import Foundation
 
+// MARK: - AnyCodable
 public struct AnyCodable: Codable {
     public let value: Any
 
@@ -21,9 +22,9 @@ public struct AnyCodable: Codable {
         } else if let arrayValue = try? container.decode([AnyCodable].self) {
             value = arrayValue.map { $0.value }
         } else if let dictValue = try? container.decode([String: AnyCodable].self) {
-            var converted = [String: Any]()
-            for (k, v) in dictValue { converted[k] = v.value }
-            value = converted
+            value = dictValue.reduce(into: [String: Any]()) { dict, pair in
+                dict[pair.key] = pair.value.value
+            }
         } else {
             throw DecodingError.dataCorruptedError(
                 in: container,
@@ -47,8 +48,7 @@ public struct AnyCodable: Codable {
         case let arrayValue as [Any]:
             try container.encode(arrayValue.map { AnyCodable($0) })
         case let dictValue as [String: Any]:
-            let encodedDict = dictValue.mapValues { AnyCodable($0) }
-            try container.encode(encodedDict)
+            try container.encode(dictValue.mapValues { AnyCodable($0) })
         default:
             throw EncodingError.invalidValue(
                 value,
@@ -66,7 +66,7 @@ public struct AnyCodable: Codable {
     }
 }
 
-
+// MARK: - Manifest Models
 public struct ManifestVars: Codable {
     public var type: String?
     public var regex: String?
@@ -126,7 +126,6 @@ public struct ManifestFileRequestExtra: Codable {
     }
 }
 
-
 public class ManifestFileResponse: Codable {
     public class ResponseBody: Codable {
         public var json: [String]
@@ -157,9 +156,16 @@ public struct ManifestFile: Codable {
     public var request: ManifestFileRequest
     public var response: ManifestFileResponse
 
-    public init(manifestVersion: String, id: String, title: String, description: String,
-                prepareUrl: String? = nil, mode: Mode? = nil,
-                request: ManifestFileRequest, response: ManifestFileResponse) {
+    public init(
+        manifestVersion: String,
+        id: String,
+        title: String,
+        description: String,
+        prepareUrl: String? = nil,
+        mode: Mode? = nil,
+        request: ManifestFileRequest,
+        response: ManifestFileResponse
+    ) {
         self.manifestVersion = manifestVersion
         self.id = id
         self.title = title
@@ -171,15 +177,10 @@ public struct ManifestFile: Codable {
     }
 }
 
+// MARK: - Cookie Extensions
 extension HTTPCookie: @retroactive Encodable {
     enum CodingKeys: String, CodingKey {
-        case name
-        case value
-        case domain
-        case path
-        case expiresDate
-        case isSecure
-        case isHTTPOnly
+        case name, value, domain, path, expiresDate, isSecure, isHTTPOnly
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -188,7 +189,6 @@ extension HTTPCookie: @retroactive Encodable {
         try container.encode(value, forKey: .value)
         try container.encode(domain, forKey: .domain)
         try container.encode(path, forKey: .path)
-        // Expires date can be nil
         if let expires = expiresDate {
             try container.encode(expires, forKey: .expiresDate)
         }
@@ -197,14 +197,11 @@ extension HTTPCookie: @retroactive Encodable {
     }
 }
 
-
-// Add this extension to help with JSON conversion
+// MARK: - JSON Conversion Extensions
 extension Encodable {
     func toJSONString() throws -> String {
         let encoder = JSONEncoder()
-        // Convert snake_case to camelCase if needed
         encoder.keyEncodingStrategy = .useDefaultKeys
-        // Handle dates if needed
         encoder.dateEncodingStrategy = .iso8601
 
         let data = try encoder.encode(self)
@@ -218,7 +215,6 @@ extension Encodable {
     }
 }
 
-// Add specific extension for HTTPCookie array since it's not Codable by default
 extension Array where Element == HTTPCookie {
     func toJSONString() throws -> String {
         let cookieDicts = self.map { cookie -> [String: Any] in

@@ -2,42 +2,50 @@ import UIKit
 import WebKit
 
 public class BrowserView: UIView, WKNavigationDelegate {
+    // MARK: - Properties
+    private var manifest: ManifestFile?
+    private var cookies: [HTTPCookie] = []
+    private var currentDOM: String = ""
 
+    public var onClose: (() -> Void)?
+    public var onCapture: (([HTTPCookie], String) -> Void)?
+
+    // MARK: - UI Components
     private let containerView: UIView = {
-        let v = UIView()
-        v.backgroundColor = .systemBackground
-        v.translatesAutoresizingMaskIntoConstraints = false
-        return v
+        let view = UIView()
+        view.backgroundColor = .systemBackground
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
     }()
 
     private let topBar: UIView = {
-        let v = UIView()
-        v.backgroundColor = .secondarySystemBackground
-        v.translatesAutoresizingMaskIntoConstraints = false
-        return v
+        let view = UIView()
+        view.backgroundColor = .secondarySystemBackground
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
     }()
 
     private let closeButton: UIButton = {
-        let btn = UIButton(type: .system)
-        btn.setImage(UIImage(systemName: "xmark"), for: .normal)
-        btn.translatesAutoresizingMaskIntoConstraints = false
-        return btn
+        let button = UIButton(type: .system)
+        button.setImage(UIImage(systemName: "xmark"), for: .normal)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
     }()
 
     private let lockImageView: UIImageView = {
-        let img = UIImageView(image: UIImage(systemName: "lock.fill"))
-        img.contentMode = .scaleAspectFit
-        img.translatesAutoresizingMaskIntoConstraints = false
-        img.isHidden = true  // Start hidden
-        return img
+        let imageView = UIImageView(image: UIImage(systemName: "lock.fill"))
+        imageView.contentMode = .scaleAspectFit
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.isHidden = true
+        return imageView
     }()
 
     private let titleLabel: UILabel = {
-        let lbl = UILabel()
-        lbl.font = UIFont.systemFont(ofSize: 17, weight: .semibold)
-        lbl.lineBreakMode = .byTruncatingTail
-        lbl.translatesAutoresizingMaskIntoConstraints = false
-        return lbl
+        let label = UILabel()
+        label.font = UIFont.systemFont(ofSize: 17, weight: .semibold)
+        label.lineBreakMode = .byTruncatingTail
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
     }()
 
     private lazy var titleStackView: UIStackView = {
@@ -50,20 +58,13 @@ public class BrowserView: UIView, WKNavigationDelegate {
     }()
 
     private let webView: WKWebView = {
-        let wv = WKWebView()
-        wv.scrollView.contentInsetAdjustmentBehavior = .automatic
-        wv.translatesAutoresizingMaskIntoConstraints = false
-        return wv
+        let webView = WKWebView()
+        webView.scrollView.contentInsetAdjustmentBehavior = .automatic
+        webView.translatesAutoresizingMaskIntoConstraints = false
+        return webView
     }()
 
-    private var manifest: ManifestFile?
-    private var cookies: [HTTPCookie] = [];
-    private var currentDOM: String = ""
-    public var onClose: (() -> Void)?
-    public var onCapture: (([HTTPCookie], String) -> Void)?
-
-    // MARK: - Init
-
+    // MARK: - Initialization
     public override init(frame: CGRect) {
         super.init(frame: frame)
         setupLayout()
@@ -74,12 +75,15 @@ public class BrowserView: UIView, WKNavigationDelegate {
         setupLayout()
     }
 
-    // MARK: - Setup Layout
-
+    // MARK: - Setup
     private func setupLayout() {
         backgroundColor = .systemBackground
+        setupContainerView()
+        setupTopBar()
+        setupWebView()
+    }
 
-        // Container fills our entire view
+    private func setupContainerView() {
         addSubview(containerView)
         NSLayoutConstraint.activate([
             containerView.topAnchor.constraint(equalTo: topAnchor),
@@ -87,36 +91,45 @@ public class BrowserView: UIView, WKNavigationDelegate {
             containerView.trailingAnchor.constraint(equalTo: trailingAnchor),
             containerView.bottomAnchor.constraint(equalTo: bottomAnchor)
         ])
+    }
 
-        // Top bar pinned to safe area top
+    private func setupTopBar() {
         containerView.addSubview(topBar)
+        setupCloseButton()
+        setupTitleStack()
+
         NSLayoutConstraint.activate([
             topBar.topAnchor.constraint(equalTo: containerView.safeAreaLayoutGuide.topAnchor),
             topBar.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
             topBar.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
             topBar.heightAnchor.constraint(equalToConstant: 44)
         ])
+    }
 
-        // Close button on the far left
+    private func setupCloseButton() {
         topBar.addSubview(closeButton)
         closeButton.addTarget(self, action: #selector(closeTapped), for: .touchUpInside)
+
         NSLayoutConstraint.activate([
             closeButton.leadingAnchor.constraint(equalTo: topBar.leadingAnchor, constant: 8),
             closeButton.centerYAnchor.constraint(equalTo: topBar.centerYAnchor)
         ])
+    }
 
-        // Title stack (lock + label) in the center
+    private func setupTitleStack() {
         topBar.addSubview(titleStackView)
         NSLayoutConstraint.activate([
             titleStackView.centerXAnchor.constraint(equalTo: topBar.centerXAnchor),
             titleStackView.centerYAnchor.constraint(equalTo: topBar.centerYAnchor),
             titleStackView.leadingAnchor.constraint(greaterThanOrEqualTo: closeButton.trailingAnchor, constant: 8),
-            titleStackView.trailingAnchor.constraint(lessThanOrEqualTo: topBar.trailingAnchor, constant: -8),
+            titleStackView.trailingAnchor.constraint(lessThanOrEqualTo: topBar.trailingAnchor, constant: -8)
         ])
+    }
 
-        // WebView below top bar
+    private func setupWebView() {
         containerView.addSubview(webView)
         webView.navigationDelegate = self
+
         NSLayoutConstraint.activate([
             webView.topAnchor.constraint(equalTo: topBar.bottomAnchor),
             webView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
@@ -125,8 +138,7 @@ public class BrowserView: UIView, WKNavigationDelegate {
         ])
     }
 
-    // MARK: - Present
-
+    // MARK: - Public Methods
     public func present(with manifest: ManifestFile, in viewController: UIViewController) {
         self.manifest = manifest
 
@@ -146,42 +158,37 @@ public class BrowserView: UIView, WKNavigationDelegate {
     }
 
     // MARK: - Actions
-
     @objc private func closeTapped() {
         removeFromSuperview()
         onClose?()
     }
 
     // MARK: - WKNavigationDelegate
-
     public func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-        // Update the title
+        updateUI()
+        captureData()
+    }
+
+    private func updateUI() {
         let siteTitle = webView.title ?? ""
         titleLabel.text = siteTitle
 
-        // Check if https
         let isHTTPS = (webView.url?.scheme?.lowercased() == "https")
+        lockImageView.isHidden = !(isHTTPS && !siteTitle.isEmpty)
+        lockImageView.tintColor = .systemGreen
+    }
 
-        // Show the lock only if site is https AND the title is not empty
-        if isHTTPS && !siteTitle.isEmpty {
-            lockImageView.isHidden = false
-            lockImageView.tintColor = .systemGreen // always green
-        } else {
-            lockImageView.isHidden = true
-        }
-
-        // Get cookies after page load
+    private func captureData() {
         WKWebsiteDataStore.default().httpCookieStore.getAllCookies { [weak self] cookies in
             self?.cookies = cookies
-            self?.onCapture?(self?.cookies ?? [], self?.currentDOM ?? "")
-        }
 
-        // Capture DOM after page load
-        let javascript = "document.documentElement.outerHTML"
-        webView.evaluateJavaScript(javascript) { [weak self] result, error in
-            if let html = result as? String {
-                self?.currentDOM = html
-                self?.onCapture?(self?.cookies ?? [], html)
+            let javascript = "document.documentElement.outerHTML"
+            self?.webView.evaluateJavaScript(javascript) { [weak self] result, _ in
+                guard let self = self,
+                      let html = result as? String else { return }
+
+                self.currentDOM = html
+                self.onCapture?(cookies, html)
             }
         }
     }

@@ -124,55 +124,56 @@ class ViewController: UIViewController {
     }
 
     @objc private func openBrowserTapped() {
-        requestBuilder = RequestBuilder(parentViewController: self)
-        requestBuilder?.onManifestConstructed = { [weak self] updatedManifest in
-            // Handle the constructed manifest
-            self?.statusLabel.text = "Manifest constructed"
+        do {
+            try RequestBuilder(parentViewController: self)
+                .withManifest(manifest)
+                .withPrepareJS("""
+                    function prepare(ctx, manifest) {
+                        const cookies = ctx.cookies;
+                        const doc = ctx.doc;
 
-            // You could start the proof generation here
-            Task {
-                do {
-                    let proofResult = try await PlutoSwiftSDK.generateProof(manifest: updatedManifest) { status in
-                        print("Proof status changed: \(status)")
+                        try {
+                            // Auth Token
+                            if (cookies["token_v2"]) {
+                                manifest.request.set("authToken", cookies["token_v2"].value);
+                            }
+
+                            // User ID
+                            const userLink = doc.querySelector('span.user > a[href*="/user/"]');
+                            if (userLink) {
+                                manifest.request.set(
+                                    "userId",
+                                    userLink.getAttribute("href").split("/user/")[1].replace("/", "")
+                                );
+                            }
+
+                            return (
+                                !manifest.request.get("body").variables.name.includes("<%") &&
+                                !!manifest.request.getHeader("Authorization")
+                            );
+                        } catch (e) {
+                            console.error("Error in getBody:", e);
+                            return false;
+                        }
                     }
-                    self?.statusLabel.text = "Proof generated: \(proofResult)"
-                } catch {
-                    self?.statusLabel.text = "Error generating proof: \(error.localizedDescription)"
+                """)
+                .showBrowserView { [weak self] updatedManifest in
+                    self?.statusLabel.text = "Manifest constructed"
+
+                    Task {
+                        do {
+                            let proofResult = try await PlutoSwiftSDK.generateProof(manifest: updatedManifest) { status in
+                                print("Proof status changed: \(status)")
+                            }
+                            self?.statusLabel.text = "Proof generated: \(proofResult)"
+                        } catch {
+                            self?.statusLabel.text = "Error generating proof: \(error.localizedDescription)"
+                        }
+                    }
                 }
-            }
+        } catch {
+            statusLabel.text = "Error: \(error.localizedDescription)"
         }
-
-        // Show the browser with our manifest
-        requestBuilder?.showBrowserView(with: manifest, prepareJS: """
-                                      function prepare(ctx, manifest) {
-                                        const cookies = ctx.cookies;
-                                        const doc = ctx.doc;
-
-                                        try {
-                                          // Auth Token
-                                          if (cookies["token_v2"]) {
-                                            manifest.request.set("authToken", cookies["token_v2"].value);
-                                          }
-
-                                          // User ID
-                                          const userLink = doc.querySelector('span.user > a[href*="/user/"]');
-                                          if (userLink) {
-                                            manifest.request.set(
-                                              "userId",
-                                              userLink.getAttribute("href").split("/user/")[1].replace("/", "")
-                                            );
-                                          }
-
-                                          return (
-                                            !manifest.request.get("body").variables.name.includes("<%") &&
-                                            !!manifest.request.getHeader("Authorization")
-                                          );
-                                        } catch (e) {
-                                          console.error("Error in getBody:", e);
-                                          return false;
-                                        }
-                                      }
-""")
     }
 
 }
