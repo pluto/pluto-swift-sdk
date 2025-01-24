@@ -1,5 +1,7 @@
 import Foundation
-import ProverBinary
+
+@_silgen_name("prover")
+func c_prover(_ config: UnsafePointer<Int8>?) -> UnsafePointer<Int8>?
 
 // MARK: - Types
 public enum ProofStatus {
@@ -72,7 +74,7 @@ public class Prover {
             throw ProverError.invalidResponse
         }
 
-        guard let resultPtr = prover(jsonString) else { return nil }
+        guard let resultPtr = c_prover(jsonString) else { return nil }
         return String(cString: resultPtr)
     }
 

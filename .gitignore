@@ -33,4 +33,4 @@ PlutoSDKTestApp/build/
 # Ignore temp files
 *.log
 
-Sources/Resources/*.a
+PlutoProver.xcframework
