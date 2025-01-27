@@ -3,6 +3,9 @@ import Foundation
 @_silgen_name("prover")
 func c_prover(_ config: UnsafePointer<Int8>?) -> UnsafePointer<Int8>?
 
+@_silgen_name("setup_tracing")
+func c_setup_tracing()
+
 // MARK: - Types
 public enum ProofStatus {
     case loading
@@ -15,6 +18,7 @@ struct RawProverResponse: Codable {
     let error: String?
 }
 
+var setupTracing = false;
 // MARK: - Prover
 public class Prover {
     // MARK: - Properties
@@ -28,6 +32,11 @@ public class Prover {
 
     // MARK: - Public Methods
     public func generateProof(manifest: ManifestFile, onStatusChange: ((ProofStatus) -> Void)? = nil) async throws -> String {
+        if !setupTracing {
+            c_setup_tracing()
+            setupTracing = true
+        }
+
         let targetBody = manifest.request.body ?? AnyCodable("")
 
         do {

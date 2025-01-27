@@ -11,10 +11,10 @@
 		E041E3482D41A85300EF4588 /* PlutoButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E041E3442D41A85300EF4588 /* PlutoButton.swift */; };
 		E041E3492D41A85300EF4588 /* SampleData.swift in Sources */ = {isa = PBXBuildFile; fileRef = E041E3462D41A85300EF4588 /* SampleData.swift */; };
 		E041E34A2D41A85300EF4588 /* BrowserProofView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E041E3432D41A85300EF4588 /* BrowserProofView.swift */; };
+		E048F6572D481E5500B96498 /* PlutoProver.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = E048F6562D481E5500B96498 /* PlutoProver.xcframework */; };
 		E04E17972D122AA1006DBB0B /* PlutoSwiftSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E09694222D0CFA9C00A65712 /* PlutoSwiftSDK.framework */; };
 		E04E179D2D122AB0006DBB0B /* ManifestParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E04E178D2D122A3D006DBB0B /* ManifestParserTests.swift */; };
 		E06A11032D35B47800AE0F57 /* PlutoSwiftSDK-Bridging-Header.h in Headers */ = {isa = PBXBuildFile; fileRef = E06A11022D35B47800AE0F57 /* PlutoSwiftSDK-Bridging-Header.h */; };
-		E07C6CC42D4442360080A3E1 /* PlutoProver.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = E07C6CC22D44420E0080A3E1 /* PlutoProver.xcframework */; };
 		E082C9802D37253900564C89 /* Injector.swift in Sources */ = {isa = PBXBuildFile; fileRef = E082C97F2D37253900564C89 /* Injector.swift */; };
 		E082C9822D38465500564C89 /* RequestBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = E082C9812D38465500564C89 /* RequestBuilder.swift */; };
 		E09694272D0CFA9C00A65712 /* PlutoSwiftSDK.docc in Sources */ = {isa = PBXBuildFile; fileRef = E09694262D0CFA9C00A65712 /* PlutoSwiftSDK.docc */; };
@@ -74,11 +74,11 @@
 		E041E3442D41A85300EF4588 /* PlutoButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlutoButton.swift; sourceTree = "<group>"; };
 		E041E3452D41A85300EF4588 /* ProofGeneratorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProofGeneratorView.swift; sourceTree = "<group>"; };
 		E041E3462D41A85300EF4588 /* SampleData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleData.swift; sourceTree = "<group>"; };
+		E048F6562D481E5500B96498 /* PlutoProver.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = PlutoProver.xcframework; sourceTree = "<group>"; };
 		E04E178D2D122A3D006DBB0B /* ManifestParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManifestParserTests.swift; sourceTree = "<group>"; };
 		E04E17932D122AA1006DBB0B /* PlutoSwiftSDKTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PlutoSwiftSDKTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E04E17A02D12391E006DBB0B /* PlutoSwiftSDKTestPlan.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; name = PlutoSwiftSDKTestPlan.xctestplan; path = ../PlutoSwiftSDKTestPlan.xctestplan; sourceTree = "<group>"; };
 		E06A11022D35B47800AE0F57 /* PlutoSwiftSDK-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PlutoSwiftSDK-Bridging-Header.h"; sourceTree = "<group>"; };
-		E07C6CC22D44420E0080A3E1 /* PlutoProver.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = PlutoProver.xcframework; sourceTree = "<group>"; };
 		E082C97F2D37253900564C89 /* Injector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Injector.swift; sourceTree = "<group>"; };
 		E082C9812D38465500564C89 /* RequestBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestBuilder.swift; sourceTree = "<group>"; };
 		E09694222D0CFA9C00A65712 /* PlutoSwiftSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PlutoSwiftSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -116,7 +116,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E07C6CC42D4442360080A3E1 /* PlutoProver.xcframework in Frameworks */,
+				E048F6572D481E5500B96498 /* PlutoProver.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -131,6 +131,13 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		E048F64D2D44668700B96498 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
 		E04E178B2D1229F1006DBB0B /* Tests */ = {
 			isa = PBXGroup;
 			children = (
@@ -211,7 +218,7 @@
 		E0BF04FC2D121CD500AB3BFB /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				E07C6CC22D44420E0080A3E1 /* PlutoProver.xcframework */,
+				E048F6562D481E5500B96498 /* PlutoProver.xcframework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -219,6 +226,7 @@
 		E0BF05092D1225CB00AB3BFB /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				E048F64D2D44668700B96498 /* Resources */,
 				E09694242D0CFA9C00A65712 /* PlutoSwiftSDK */,
 			);
 			path = Sources;
@@ -613,6 +621,11 @@
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				ENABLE_MODULE_VERIFIER = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/Sources/Resources",
+				);
 				GENERATE_INFOPLIST_FILE = YES;
 				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/Sources/PlutoSwiftSDK/include";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
@@ -656,6 +669,11 @@
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				ENABLE_MODULE_VERIFIER = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/Sources/Resources",
+				);
 				GENERATE_INFOPLIST_FILE = YES;
 				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/Sources/PlutoSwiftSDK/include";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
