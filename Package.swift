@@ -1,27 +1,31 @@
-// swift-tools-version:5.9
+// swift-tools-version:5.5
 import PackageDescription
 
 let package = Package(
     name: "PlutoSwiftSDK",
     platforms: [
-        .iOS(.v17)  // Minimum iOS version supported
+        .iOS(.v17)
     ],
     products: [
         .library(
             name: "PlutoSwiftSDK",
-            targets: ["PlutoSwiftSDK"]
-        )
+            targets: ["PlutoSwiftSDK"]),
     ],
+    dependencies: [],
     targets: [
         .target(
             name: "PlutoSwiftSDK",
-            path: "Sources"  // Path to your source code
+            dependencies: ["ProverBinary"],
+            linkerSettings: [
+                .linkedLibrary("c++")
+            ]
+        ),
+        .binaryTarget(
+            name: "ProverBinary",
+            path: "PlutoProver.xcframework"
         ),
         .testTarget(
             name: "PlutoSwiftSDKTests",
-            dependencies: ["PlutoSwiftSDK"],
-            path: "Tests"  // Path to your test files
-        )
-    ],
-    swiftLanguageVersions: [.v5]
+            dependencies: ["PlutoSwiftSDK"]),
+    ]
 )
