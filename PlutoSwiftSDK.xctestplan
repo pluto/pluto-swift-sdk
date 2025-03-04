@@ -1,0 +1,24 @@
+{
+  "configurations" : [
+    {
+      "id" : "77AD4720-2E66-49A6-BD57-373BE5F2A229",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:PlutoSwiftSDK.xcodeproj",
+        "identifier" : "E061B2522D6919FB000B39C9",
+        "name" : "PlutoSwiftSDKTests"
+      }
+    }
+  ],
+  "version" : 1
+}

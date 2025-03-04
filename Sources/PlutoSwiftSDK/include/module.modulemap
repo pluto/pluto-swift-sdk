@@ -1,0 +1,4 @@
+module PLTLogInterceptor {
+    header "../PLTLogInterceptor.h"
+    export *
+}
